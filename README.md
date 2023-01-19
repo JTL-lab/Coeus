@@ -1,18 +1,40 @@
-# GeneCoeus
+![Coeus Logo](coeus/assets/coeus.png)
+
+# Coeus
 A Plotly dashboard to facilitate the visual exploration of gene neighborhood data. 
 
 Coeus's primary use case is for the analysis of the genomic contexts of antimicrobial resistance (AMR) genes in bacterial genomes. It allows for easy visual comparison of gene order alongside gene neighborhood similarity-based clustering results showcasing differences between a gene's neighborhood across genomes. 
 
-For generating clustering outputs, see Gene-Order-Workflow for a ready-to-use Nextflow pipeline that extracts AMR gene neighborhoods from assembly and annotation files and performs unsupervised learning to assign neighborhood clusters. 
+Coeus requires output files generated from [Gene-Order-Workflow](https://github.com/JTL-lab/Gene-Order-Workflow). Gene-Order-Workflow is a Nextflow based workflow to extract AMR gene neighborhoods from assembly and annotation files, perform unsupervised learning to assign neighborhood clusters, and generate ML classifier predictions for candidate divergent AMR genes (WIP). 
 
-### Running the dashboard 
-To run the dashboard: 
+### Installation 
+Coeus is set up with Poetry for dependencies management. 
+
+To install Poetry on your local machine: 
+```
+python3 -m pip install pipx
+python3 -m pipx ensurepath
+pipx install poetry
 ```
 
+To then install all project dependencies, within the Coeus repository run: 
+```
+poetry install
+```
+
+If you're interested in viewing details on the package dependencies, within the Coeus repository you can run: 
+```
+poetry show --help 
+```
+
+### Running the dashboard 
+To run the dashboard, within the src directory (Coeus/coeus) run: 
+```
+python coeus.py
 ```
 
 ### Acknowledgements 
-This project uses code developed by Cameron Gilchrist (gamcil) for clustermap.js, which is used and modified here under the MIT license.
+To render gene order visualizations within the dashboard, this project uses code developed by Cameron Gilchrist (gamcil) for the D3 chart clustermap.js, which is used and modified here under the MIT license.
 
 Citation: 
 ```

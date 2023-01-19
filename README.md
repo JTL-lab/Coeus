@@ -1,6 +1,5 @@
 ![Coeus Logo](coeus/assets/coeus.png)
 
-# Coeus
 A Plotly dashboard to facilitate the visual exploration of gene neighborhood data. 
 
 Coeus's primary use case is for the analysis of the genomic contexts of antimicrobial resistance (AMR) genes in bacterial genomes. It allows for easy visual comparison of gene order alongside gene neighborhood similarity-based clustering results showcasing differences between a gene's neighborhood across genomes. 

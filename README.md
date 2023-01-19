@@ -1,9 +1,15 @@
 # GeneCoeus
-A Plotly dashboard to facilitate visual exploration of gene neighborhood data. 
+A Plotly dashboard to facilitate the visual exploration of gene neighborhood data. 
 
-Genecoeus's primary use case is for the analysis of the genomic contexts of antimicrobial resistance (AMR) genes in bacterial genomes. It allows for easy comparison of gene order alongside neighborhood clustering results showcasing similarities and differences between a gene's neighborhood representations across genomes. 
+Coeus's primary use case is for the analysis of the genomic contexts of antimicrobial resistance (AMR) genes in bacterial genomes. It allows for easy visual comparison of gene order alongside gene neighborhood similarity-based clustering results showcasing differences between a gene's neighborhood across genomes. 
 
 For generating clustering outputs, see Gene-Order-Workflow for a ready-to-use Nextflow pipeline that extracts AMR gene neighborhoods from assembly and annotation files and performs unsupervised learning to assign neighborhood clusters. 
+
+### Running the dashboard 
+To run the dashboard: 
+```
+
+```
 
 ### Acknowledgements 
 This project uses code developed by Cameron Gilchrist (gamcil) for clustermap.js, which is used and modified here under the MIT license.

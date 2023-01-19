@@ -9,7 +9,7 @@ Coeus requires output files generated from [Gene-Order-Workflow](https://github.
 ### Installation 
 Coeus is set up with Poetry for dependencies management. 
 
-To install Poetry on your local machine: 
+To install Poetry: 
 ```
 python3 -m pip install pipx
 python3 -m pipx ensurepath
@@ -26,8 +26,8 @@ If you're interested in viewing details on the package dependencies, within the 
 poetry show --help 
 ```
 
-### Running the dashboard 
-To run the dashboard, within the src directory (Coeus/coeus) run: 
+### Using the dashboard
+Onnce you've installed the required dependencies, you can use the dashboard on your local machine by running the following within the src directory (/Coeus/coeus): 
 ```
 python coeus.py
 ```

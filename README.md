@@ -36,6 +36,8 @@ poetry show --help
 python coeus.py
 ```
 
+4. Launch your preferred web browser to view the dashboard at http://localhost:8050/ .
+
 ### Acknowledgements 
 To render gene order visualizations within the dashboard, this project uses code developed by Cameron Gilchrist (gamcil) for the D3 chart clustermap.js, which is used and modified here under the MIT license.
 

@@ -354,16 +354,16 @@ app.layout = html.Div(children=[
 
                               # Pane header: ARETE logo + dashboard title!
                               dbc.Row([
+                                  #html.Div(className='two columns',
+                                  #         children=[
+                                  #             html.Img(src=app.get_asset_url('arete_logo.png'),
+                                  #                      style={'max-width': '400px', 'height': '90px', 'float': 'left',
+                                  #                             'padding-left': '10px'})
+                                  #         ]),
                                   html.Div(className='two columns',
                                            children=[
-                                               html.Img(src=app.get_asset_url('arete_logo.png'),
-                                                        style={'max-width': '400px', 'height': '90px', 'float': 'left',
-                                                               'padding-left': '10px'})
-                                           ]),
-                                  html.Div(className='one column',
-                                           children=[
-                                               html.Img(src=app.get_asset_url('coeus.png'),
-                                                        style={'max-width': '400px', 'height': '90px', 'float': 'left',
+                                               html.Img(src=app.get_asset_url('coeus-logo-dark.png'),
+                                                        style={'max-width': '800px', 'height': '120px', 'float': 'left',
                                                                'padding-left': '170px', 'padding-top': '5px'})
                                            ])
                               ], style={'padding-top': '20px'}),

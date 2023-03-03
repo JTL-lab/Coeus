@@ -92,6 +92,12 @@ urllib3 = "1.26.12"
 wcwidth = "0.2.5"
 werkzeug = "2.2.2"
 zipp = "3.10.0"
+markov-clustering = "0.0.6.dev0"
+patsy = "0.5.3"
+plotly-express = "0.4.1"
+scikit-bio = "0.5.7"
+scikit-learn = "1.0.2"
+statsmodels = "0.13.5"
 
 [build-system]
 requires = ["poetry-core"]

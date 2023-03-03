@@ -1,4 +1,5 @@
-![Coeus Logo](coeus/assets/coeus.png)
+![Coeus Logo](coeus/assets/coeus-logo-light.png#gh-light-mode-only)
+![Coeus Logo](coeus/assets/coeus-logo-dark.png#gh-dark-mode-only)
 
 A Plotly dashboard to facilitate the visual exploration of gene neighborhood data. 
 

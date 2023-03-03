@@ -8,11 +8,10 @@ import dash
 from dash import dcc
 from dash import html
 import dash_bootstrap_components as dbc
+from dash.exceptions import PreventUpdate
 from dash_bootstrap_templates import load_figure_template
 from dash.dependencies import Input, Output, State
-
-from IPython.display import Markdown as md
-from flask import jsonify
+import functools
 
 from scipy.cluster import hierarchy
 from scipy import sparse
@@ -35,7 +34,7 @@ def get_gene_options():
     Retrieves all gene names in alphabetical order for user selector dropdown component of dashboard.
     """
     all_filenames = [filename.split('.')[0] for filename in os.listdir('assets/clustermap/JSON')]
-    files = [filename for filename in all_filenames if 'surrogates' and 'upgma' not in filename]
+    files = [filename for filename in all_filenames if 'surrogates' not in filename and 'upgma' not in filename]
     return sorted(list(set(files)), key=str.casefold)
 
 
@@ -94,7 +93,7 @@ def filter_incomplete_neighborhoods(gene, neighborhood_size, surrogates=False):
         if len(genes) < neighborhood_size:
             cluster_data.pop(cluster_id, None)
 
-    return
+    return cluster_data
 
 
 def load_similarity_matrix(gene):
@@ -143,11 +142,8 @@ def get_UPGMA_filtering_params(gene):
     return dcc.RadioItems(sorted_node_heights, value=max_height, id='upgma-filter')
 
 
-def get_UPGMA_surrogates_clustermap(gene):
-    return
-
 # ----------------------------------- FUNCTIONS FOR APPLYING CLUSTERING ALGORITHMS  ------------------------------------
-
+@functools.lru_cache(maxsize=32)
 def render_UPGMA(gene):
     """
     Generates a UPGMA graph by applying the figure factory dendrogram to the selected gene's distance matrix.
@@ -161,6 +157,7 @@ def render_UPGMA(gene):
     return dendrogram_fig
 
 
+@functools.lru_cache(maxsize=32)
 def render_MCL(gene, inflation=2):
     """
     Generates an MCL network using markov clustering, networkx, and Plotly go.
@@ -177,6 +174,7 @@ def render_MCL(gene, inflation=2):
     return fig
 
 
+@functools.lru_cache(maxsize=32)
 def render_DBSCAN(gene, min_samples=5, eps=0.5):
     """
     Applies DBSCAN clustering to a neighborhood similarity or symmetric distance matrix.
@@ -191,8 +189,8 @@ def render_DBSCAN(gene, min_samples=5, eps=0.5):
     fig = plotly_pcoa(distance_matrix_df, genome_names, dbscan.labels_, gene)
     return fig
 
-# ----------------------------------- FUNCTIONS FOR GENERATING CLUSTERING GRAPHS ---------------------------------------
 
+# ----------------------------------- FUNCTIONS FOR GENERATING CLUSTERING GRAPHS ---------------------------------------
 def plotly_dendrogram(linkage_matrix, genome_names, AMR_gene):
     """
     Generates an interactive dendrogram visualization using Plotly figure factory.
@@ -306,7 +304,8 @@ def plotly_mcl_network(matrix, clusters, genome_names, AMR_gene):
                            legendgroup=str(cluster_map[node]), showlegend=False, legendrank=cluster_map[node],
                            marker=dict(color=cluster_colors_dict[str(cluster_map[node])], size=15)))
 
-    fig.update_layout(legend_title='MCL Cluster', paper_bgcolor='white', template='plotly_white')
+    fig.update_layout(legend_title='MCL Cluster', font_family='"Open Sans", verdana, arial, sans-serif',
+                      paper_bgcolor='white', template='plotly_white')
 
     return fig
 
@@ -333,9 +332,11 @@ def plotly_pcoa(distance_matrix_df, genome_ids, labels, AMR_gene):
                      hover_name='GenomeID',
                      title='PCoA DBSCAN clusters for {g}'.format(g=AMR_gene))
     fig.update_traces(marker_size=5, line=dict(width=2, color='black'))
-    fig.update_layout(paper_bgcolor='white', template='plotly_white', width=419, height=316)
+    fig.update_layout(paper_bgcolor='white', font_family='"Open Sans", verdana, arial, sans-serif',
+                      template='plotly_white', width=419, height=316)
 
     return fig
+
 
 # --------------------------------------------------- DASHBOARD --------------------------------------------------------
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.LUX])
@@ -364,9 +365,6 @@ app.layout = html.Div(children=[
                                                html.Img(src=app.get_asset_url('coeus.png'),
                                                         style={'max-width': '400px', 'height': '90px', 'float': 'left',
                                                                'padding-left': '170px', 'padding-top': '5px'})
-                                               # html.H1('Coeus',
-                                               #        style={'color': '#FFFFFF', 'text-align': 'right',
-                                               #               'padding-left': '175px', 'padding-top': '25px'}),
                                            ])
                               ], style={'padding-top': '20px'}),
 
@@ -395,34 +393,25 @@ app.layout = html.Div(children=[
                                                                              'padding-right': '25px',
                                                                              'padding-bottom': '25px',
                                                                              'margin-right': '25px'}),
-                                  #html.Button('Toggle clustering hyperparameters',
-                                  #            id='hyperparameter-toggle-bttn',
-                                  #            style={'background-color': '#7571B4',
-                                  #                   }),
-                                  html.P('Toggle clustering hyperparameters:', style={'color': '#FFFFFF',
-                                                                                      'font-size': '13pt',
-                                                                                      'padding-top': '25px'}),
-                                  html.P('MCL Inflation:', style={'color': '#dc2284', 'font-size': '13pt',
-                                                                  'padding-top': '10px'}),
-                                  dcc.Slider(1, 15, 1, value=2, id='inflation-slider'),
-                                  html.P('DBSCAN Minimum Points:', style={'color': '#dc2284', 'font-size': '13pt',
-                                                                          'padding-top': '10px'}),
-                                  dcc.Slider(1, 20, 1, value=5, id='min-pts-slider'),
-                                  html.P('DBSCAN Epsilon:', style={'color': '#dc2284', 'font-size': '13pt',
-                                                                   'padding-top': '10px'}),
-                                  dcc.Slider(0, 1, 0.1, value=0.5, id='epsilon-slider')
-
-                                  #html.Div([get_UPGMA_filtering_params(get_gene_names()[0])], id='slider-div')
-                                  # html.P('Color neighborhoods by: ', style={'color': '#FFFFFF',
-                                  #                                        'font-size': '13pt',
-                                  #                                        'padding-top': '25px'}),
-                                  # dcc.RadioItems(id='clustermap-color-mode',
-                                  #               options=['Gene Cluster', 'RGI Hit'],
-                                  #               labelStyle={'display': 'block'},
-                                  #               value='Gene Cluster', style={'color':'#FFFFFF',
-                                  #                                            'font-size':'11pt'})
+                                  html.Button('Toggle clustering hyperparameters',
+                                              id='hyperparameter-toggle-btn',
+                                              n_clicks=0,
+                                              style={'background-color': '#7571B4', 'color': '#393939'}),
+                                  html.Div([
+                                      html.P('Toggle hyperparameters:', style={'color': '#FFFFFF',
+                                                                               'font-size': '13pt',
+                                                                               'padding-top': '25px'}),
+                                      html.P('MCL Inflation:', style={'color': '#dc2284', 'font-size': '13pt',
+                                                                      'padding-top': '10px'}),
+                                      dcc.Slider(1, 15, 1, value=2, id='inflation-slider'),
+                                      html.P('DBSCAN Minimum Points:', style={'color': '#dc2284', 'font-size': '13pt',
+                                                                              'padding-top': '10px'}),
+                                      dcc.Slider(1, 20, 1, value=5, id='min-pts-slider'),
+                                      html.P('DBSCAN Epsilon:', style={'color': '#dc2284', 'font-size': '13pt',
+                                                                       'padding-top': '10px'}),
+                                      dcc.Slider(0.1, 1, 0.1, value=0.5, id='epsilon-slider')
+                                  ], id='clustering-hyperparameters-div'),
                               ], style={'padding-left': '20px', 'padding-right': '20px', 'padding-top': '20px'})
-
                           ]
                           ),
 
@@ -435,12 +424,10 @@ app.layout = html.Div(children=[
                              type='circle',
                              style={'padding-top': '900px'}
                          ),
-                         # html.Iframe(src=app.get_asset_url('assets/clustermap/JSON/index.html'),
-                         #            id='clustermap', title='clustermap'),
                          html.Iframe(src=app.get_asset_url('assets/clustermap/JSON/' + get_gene_names()[0] + '.html'),
                                      id='clustermap', title='clustermap'),
-                         dcc.Markdown(get_gene_surrogates(get_gene_names()[0]), id='surrogates-md',
-                                      style={'color': 'black', 'font-weight': 700, 'overflow-y': 'scroll'})
+                         dcc.Markdown(children=None, id='surrogates-md',
+                                      style={'color': 'black', 'font-weight': 700, 'overflow': 'scroll'})
                      ])
                  ]),
 
@@ -453,33 +440,35 @@ app.layout = html.Div(children=[
                          style={'padding-top': '900px'}
                      ),
                      dbc.Row([
-                         dcc.Graph(figure=render_UPGMA(get_gene_names()[0]), id='UPGMA')
-                         # html.Iframe(src=app.get_asset_url('clustering/UPGMA/acrB.html'),
-                         #            id='UPGMA', title='UPGMA', width='419px', height='316px')
+                         html.Iframe(src=app.get_asset_url('clustering/UPGMA/' + get_gene_names()[0] + '.html'),
+                                     id='UPGMA-iframe', title='UPGMA', width='419px', height='316px')
                      ]),
                      dbc.Row([
-                         dcc.Graph(figure=render_MCL(get_gene_names()[0]), id='MCL')
-                         #html.Iframe(src=app.get_asset_url('clustering/MCL/' + get_gene_names()[0]),
-                         #            id='MCL', title='MCL', width='419px', height='316px')
+                         html.Iframe(src=app.get_asset_url('clustering/MCL/' + get_gene_names()[0] + '.html'),
+                                     id='MCL-iframe', title='MCL', width='419px', height='316px'),
+                         dcc.Graph(figure={}, id='MCL-fig', style={'display': 'none'})
                      ]),
                      dbc.Row([
-                         dcc.Graph(figure=render_DBSCAN(get_gene_names()[0]), id='DBSCAN')
-                         #html.Iframe(src=app.get_asset_url('clustering/DBSCAN/' + get_gene_names()[0]),
-                         #            id='DBSCAN', title='DBSCAN', width='419px', height='316px')
+                         html.Iframe(src=app.get_asset_url('clustering/DBSCAN/' + get_gene_names()[0] + '.html'),
+                                     id='DBSCAN-iframe', title='DBSCAN', width='419px', height='316px'),
+                         dcc.Graph(figure={}, id='DBSCAN-fig', style={'display': 'none'})
                      ])
                  ])
              ])
 ])
 
 
+# ----------- If user clicks toggle button, allow them to see controls for hyperparameter tuning -----------------------
+@app.callback(Output(component_id='clustering-hyperparameters-div', component_property='style'),
+              [Input(component_id='hyperparameter-toggle-btn', component_property='n_clicks')])
+def clustering_hyperparameters_callback(num_clicks):
+    if num_clicks % 2 == 0:
+        return {'display': 'none'}
+    else:
+        return {'display': 'inline'}
+
+
 # ------------------------------- Update all graphs based on AMR gene dropdown selection -------------------------------
-# @app.callback(Output(component_id='clustermap', component_property='src'),
-#              [Input(component_id='gene-selector', component_property='value'),
-#               Input(component_id='clustermap-mode', component_property='value')])
-# def clustermap_callback(gene_value, mode_value):
-#    return load_gene_json(gene_value)
-
-
 @app.callback(Output(component_id='clustermap', component_property='src'),
               [Input(component_id='gene-selector', component_property='value'),
                Input(component_id='clustermap-mode', component_property='value')])
@@ -496,38 +485,38 @@ def clustermap_callback(gene_value, mode_value):
               [Input(component_id='gene-selector', component_property='value')])
 def UPGMA_callback(input_value):
     return render_UPGMA(input_value)
-    # return app.get_asset_url('clustering/UPGMA/' + input_value + '.html')
 
 
-@app.callback(Output(component_id='MCL', component_property='figure'),
+@app.callback(Output(component_id='MCL-fig', component_property='figure'),
+              Output(component_id='MCL-fig', component_property='style'),
+              Output(component_id='MCL-iframe', component_property='style'),
               [Input(component_id='gene-selector', component_property='value'),
+               Input(component_id='hyperparameter-toggle-btn', component_property='n_clicks'),
                Input(component_id='inflation-slider', component_property='value')])
-def MCL_callback(input_value, inflation_value):
-    return render_MCL(input_value, inflation_value)
-    #return app.get_asset_url('clustering/MCL/' + input_value + '.html')
-
-
-#@app.callback(Output(component_id='DBSCAN', component_property='figure'),
-#              [Input(component_id='gene-selector', component_property='value')])
-#def DBSCAN_callback(input_value):
-#    return render_DBSCAN(input_value)
-    #return app.get_asset_url('clustering/DBSCAN/' + input_value + '.html')
+def MCL_callback(input_value, num_clicks, inflation_value):
+    if num_clicks == 0:
+        raise PreventUpdate
+    elif num_clicks % 2 == 0:
+        return None, {'display': 'none'}, {}
+    else:
+        return render_MCL(input_value, inflation_value), {}, {'display': 'none'}
 
 
 # ----------------------- Redo clustering with user selected hyperparameters if sliders are used -----------------------
-
-@app.callback(Output(component_id='DBSCAN', component_property='figure'),
+@app.callback(Output(component_id='DBSCAN-fig', component_property='figure'),
+              Output(component_id='DBSCAN-fig', component_property='style'),
+              Output(component_id='DBSCAN-iframe', component_property='style'),
               [Input(component_id='gene-selector', component_property='value'),
+               Input(component_id='hyperparameter-toggle-btn', component_property='n_clicks'),
                Input(component_id='min-pts-slider', component_property='value'),
                Input(component_id='epsilon-slider', component_property='value')])
-def DBSCAN_callback(input_value, min_samples_input, epsilon_input):
-    return render_DBSCAN(input_value, min_samples=min_samples_input, eps=epsilon_input)
-    #return app.get_asset_url('clustering/DBSCAN/' + input_value + '.html')
-
-#@app.callback(Output(component_id='slider-div', component_property='children'),
-#              [Input(component_id='gene-selector', component_property='value')])
-#def surrogates_loading_callback(input_value):
-#    return get_UPGMA_filtering_params(input_value)
+def DBSCAN_callback(input_value, num_clicks, min_samples_input, epsilon_input):
+    if num_clicks == 0:
+        raise PreventUpdate
+    elif num_clicks % 2 == 0:
+        return None, {'display': 'none'}, {}
+    else:
+        return render_DBSCAN(input_value, min_samples=min_samples_input, eps=epsilon_input), {}, {'display': 'none'}
 
 
 # ------------------------------------ Show circle spinner while graphs are loading ------------------------------------
@@ -544,26 +533,16 @@ def clustering_loading_callback(input_value):
     time.sleep(1)
 
 
-# ----------------- Hide slider for representative cluster height threshold only if radio button selected --------------
-#@app.callback(Output(component_id='slider-div', component_property='style'),
-#              [Input(component_id='clustermap-mode', component_property='value')])
-#def upgma_filtering_controls_callback(input_value):
-#    if input_value == 'Representative UPGMA cluster':
-#        return {'display': 'inline'}
-#    else:
-#        return {'display': 'none'}
-
-
 # ---------- Hide secondary window for showing genome surrogates unless 'Unique neighborhoods only' selected -----------
-@app.callback(Output(component_id='surrogates-md', component_property='style'),
+@app.callback(Output(component_id='surrogates-md', component_property='children'),
+              Output(component_id='surrogates-md', component_property='style'),
               [Input(component_id='clustermap-mode', component_property='value'),
                Input(component_id='gene-selector', component_property='value')])
 def clustermap_loading_callback(input_mode, input_value):
     if input_mode == 'Unique neighborhoods only':
-        get_gene_surrogates(input_value)
-        return {'height': 200, 'width': 2400, 'display': 'inline'}
+        return get_gene_surrogates(input_value), {'height': 200, 'width': 2400, 'display': 'inline'}
     else:
-        return {'height': 200, 'width': 2400, 'display': 'none'}
+        return None, {'height': 200, 'width': 2400, 'display': 'none'}
 
 
 # ------- Show surrogates list in markdown format below clustermap viz if 'Unique neighborhoods only' is selected ------
@@ -574,13 +553,6 @@ def clustermap_loading_callback(input_value):
         return {'height': 750, 'width': 2400}
     else:
         return {'height': 950, 'width': 2400}
-
-
-# -------------------- Load proper surrogates file into markdown section according to gene selected --------------------
-@app.callback(Output(component_id='surrogates-md', component_property='children'),
-              [Input(component_id='gene-selector', component_property='value')])
-def surrogates_loading_callback(input_value):
-    return get_gene_surrogates(input_value)
 
 
 if __name__ == '__main__':

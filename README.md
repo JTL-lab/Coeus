@@ -30,7 +30,7 @@ poetry show --help
 ### Using the dashboard
 1. Ensure the `JSON` directory containing all gene order visualizations generated from `Gene-Order-Workflow` is present in `assets/clustermap/JSON` (sample data is included as a placeholder). 
 
-2. If you do not intend to generate clustering figures dynamically using the available hyperparameter controls in the dashboard and want to use precomputed figures instead (generally recommended for large datasets), ensure the `clustering` directory containing all clustering ouputs generated from `Gene-Order-Workflow` is present in `assets/clustering` (sample data is included as a placeholder).
+2. If you do not intend to generate clustering figures dynamically using the available hyperparameter controls in the dashboard and want to use precomputed figures instead (default, generally recommended for large datasets), ensure the `clustering` directory containing all clustering ouputs generated from `Gene-Order-Workflow` is present in `assets/clustering` (sample data is included as a placeholder).
 
 3. Once you've installed the required dependencies, you can use the dashboard on your local machine by running the following within the src directory (/Coeus/coeus): 
 ```

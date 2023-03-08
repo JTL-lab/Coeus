@@ -5,7 +5,7 @@ A Plotly dashboard to facilitate the visual exploration of gene neighborhood dat
 
 Coeus's primary use case is for the analysis of the genomic contexts of antimicrobial resistance (AMR) genes in bacterial genomes. It allows for easy visual comparison of gene order alongside gene neighborhood similarity-based clustering results showcasing differences between a gene's neighborhood across genomes. 
 
-Coeus requires output files generated from [Gene-Order-Workflow](https://github.com/JTL-lab/Gene-Order-Workflow). Gene-Order-Workflow is a Nextflow based workflow to extract AMR gene neighborhoods from assembly and annotation files, derive similarity and distance matrices from BLAST All-vs-All bitscores, and perform unsupervised machine learning to assign neighborhood clusters. 
+Coeus requires output files generated from [Gene-Order-Workflow](https://github.com/JTL-lab/Gene-Order-Workflow). Gene-Order-Workflow is a Nextflow based workflow to extract gene neighborhoods from assembly and annotation files for a user's specified genes of interest, derive similarity and distance matrices from BLAST All-vs-All bitscores, and perform unsupervised machine learning to assign neighborhood clusters. 
 
 ### Installation 
 Coeus is set up with Poetry for dependencies management. 

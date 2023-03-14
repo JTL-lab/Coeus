@@ -8,6 +8,8 @@ Coeus's primary use case is for the analysis of the genomic contexts of antimicr
 Coeus requires output files generated from [Gene-Order-Workflow](https://github.com/JTL-lab/Gene-Order-Workflow). Gene-Order-Workflow is a Nextflow based workflow to extract gene neighborhoods from assembly and annotation files for a user's specified genes of interest, derive similarity and distance matrices from BLAST All-vs-All bitscores, and perform unsupervised machine learning to assign neighborhood clusters. 
 
 ### Installation 
+Installation is not currently supported for Windows. 
+
 Coeus is set up with Poetry for dependencies management. 
 
 To install Poetry: 
@@ -17,7 +19,7 @@ python3 -m pipx ensurepath
 pipx install poetry
 ```
 
-To then install all project dependencies, within the Coeus repository run: 
+To then install all project dependencies, within the Coeus repository, run: 
 ```
 poetry install
 ```
@@ -32,9 +34,9 @@ poetry show --help
 
 2. If you do not intend to generate clustering figures dynamically using the available hyperparameter controls in the dashboard and want to use precomputed figures instead (default, generally recommended for large datasets), ensure the `clustering` directory containing all clustering ouputs generated from `Gene-Order-Workflow` is present in `assets/clustering` (sample data is included as a placeholder).
 
-3. Once you've installed the required dependencies, you can use the dashboard on your local machine by running the following within the src directory (`Coeus/coeus`): 
+3. Once you've installed the required dependencies as shown in the Installation section, you can use the dashboard on your local machine by running the following within the src directory (`Coeus/coeus`): 
 ```
-python coeus.py
+poetry run python coeus.py
 ```
 
 4. Launch your preferred web browser to view the dashboard at http://localhost:8050/ .

@@ -24,10 +24,23 @@ import markov_clustering as mcl
 from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import StandardScaler
 from skbio.stats.ordination import pcoa
+import random
 
-colours = ['#6e40aa', '#b83cb0', '#c33dad', '#ff4f7c', '#f6478d', '#ff6956', '#f59f30', '#c4d93e',
-           '#83f557', '#38f17a', '#22e599', '#19d3b5', '#29a0dd', '#5069d9', '#5f56c9', '#bbbbbb']
 
+def get_colors(num):
+    """
+    Color mapping for visualizations.
+    """
+    colors = ['#6e40aa', '#b83cb0', '#c33dad', '#ff4f7c', '#f6478d', '#ff6956', '#f59f30', '#c4d93e',
+               '#83f557', '#38f17a', '#22e599', '#19d3b5', '#29a0dd', '#5069d9', '#5f56c9', '#bbbbbb']
+
+    if num <= len(colors):
+        return colors
+    else:
+        for i in range(len(num - colors)):
+            rand_color = lambda: random.randint(0,255)
+            colors.append('#%02X%02X%02X' % (r(),r(),r()))
+        return colors
 
 def get_gene_options():
     """
@@ -201,7 +214,7 @@ def plotly_dendrogram(linkage_matrix, genome_names, AMR_gene):
     fig = create_dendrogram(linkage_matrix,
                             linkagefun=lambda x: hierarchy.linkage(x, "average"),
                             labels=genome_names,
-                            colorscale=colours)
+                            colorscale=get_colors(len(genome_names)))
     fig.update_layout(autosize=True, title=title, paper_bgcolor='white', template='plotly_white', width=419, height=316)
     return fig
 
@@ -235,7 +248,8 @@ def plotly_mcl_network(matrix, clusters, genome_names, AMR_gene):
     hex_colors = []
     cluster_colors_dict = {}
 
-    for hex in colours:
+    colors = get_colors(len(genome_names))
+    for hex in colors:
         hex_colors.append(hex)
 
     for cluster in set(cluster_map.values()):
@@ -328,7 +342,7 @@ def plotly_pcoa(distance_matrix_df, genome_ids, labels, AMR_gene):
 
     fig = px.scatter(df, x='PC1', y='PC2',
                      color='Cluster',
-                     color_discrete_sequence=colours,
+                     color_discrete_sequence=get_colors(len(genome_ids)),
                      hover_name='GenomeID',
                      title='PCoA DBSCAN clusters for {g}'.format(g=AMR_gene))
     fig.update_traces(marker_size=5, line=dict(width=2, color='black'))

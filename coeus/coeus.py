@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import json
 import numpy as np
@@ -37,15 +38,20 @@ def get_colors(num):
     if num <= len(colors):
         return colors
     else:
-        for i in range(len(num - colors)):
+        for i in range(num - len(colors)):
             rand_color = lambda: random.randint(0,255)
-            colors.append('#%02X%02X%02X' % (r(),r(),r()))
+            colors.append('#%02X%02X%02X' % (rand_color(), rand_color(), rand_color()))
         return colors
 
 def get_gene_options():
     """
     Retrieves all gene names in alphabetical order for user selector dropdown component of dashboard.
     """
+    try:
+        json_files = os.listdir('assets/clustermap/JSON')
+    except FileNotFoundError:
+        print("Error: JSON directory missing. Please follow documentation instructions for JSON directory placement.")
+        sys.exit(1)
     all_filenames = [filename.split('.')[0] for filename in os.listdir('assets/clustermap/JSON')]
     files = [filename for filename in all_filenames if 'surrogates' not in filename and 'upgma' not in filename]
     return sorted(list(set(files)), key=str.casefold)
@@ -121,7 +127,7 @@ def load_distance_matrix(gene):
     """
     Loads distance matrix required for rendering UPGMA and DBSCAN clustering.
     """
-    df = pd.read_csv('assets/clustering/UPGMA/' + gene + '_distance_matrix.csv', sep='\t')
+    df = pd.read_csv('assets/clustering/distance_matrices/' + gene + '_distance_matrix.csv', sep='\t')
     return df
 
 
@@ -387,7 +393,7 @@ app.layout = html.Div(children=[
                                      "genomes, along with the neighborhoods' clusterings using three algorithms "
                                      "(UPGMA, MCL, and DBSCAN) to provide additional context on their similarities "
                                      "and differences.", style={'font-size': '10pt', 'padding-top': '20px',
-                                                                'padding-left': '25px', 'padding-bottom': '10px'}),
+                                                                'padding-left': '25px', 'padding-bottom': '11px'}),
 
                               # Pane content
                               dbc.Row([
@@ -411,6 +417,8 @@ app.layout = html.Div(children=[
                                               id='hyperparameter-toggle-btn',
                                               n_clicks=0,
                                               style={'background-color': '#7571B4', 'color': '#393939'}),
+                                  html.P('Note: For larger datasets, hyperparameter changes may take some time to update.',
+                                         style={'font-size': '11pt', 'padding-top': '25px'}),
                                   html.Div([
                                       html.P('Toggle hyperparameters:', style={'color': '#FFFFFF',
                                                                                'font-size': '13pt',
@@ -495,42 +503,40 @@ def clustermap_callback(gene_value, mode_value):
         return app.get_asset_url('clustermap/JSON/' + gene_value + '.html')
 
 
-@app.callback(Output(component_id='UPGMA', component_property='figure'),
-              [Input(component_id='gene-selector', component_property='value')])
-def UPGMA_callback(input_value):
-    return render_UPGMA(input_value)
+@app.callback(Output(component_id='UPGMA-iframe', component_property='src'),
+             [Input(component_id='gene-selector', component_property='value')])
+def UPGMA_callback(gene):
+    return app.get_asset_url('clustering/UPGMA/' + gene + '.html')
 
 
 @app.callback(Output(component_id='MCL-fig', component_property='figure'),
               Output(component_id='MCL-fig', component_property='style'),
               Output(component_id='MCL-iframe', component_property='style'),
+              Output(component_id='MCL-iframe', component_property='src'),
               [Input(component_id='gene-selector', component_property='value'),
                Input(component_id='hyperparameter-toggle-btn', component_property='n_clicks'),
                Input(component_id='inflation-slider', component_property='value')])
-def MCL_callback(input_value, num_clicks, inflation_value):
-    if num_clicks == 0:
-        raise PreventUpdate
-    elif num_clicks % 2 == 0:
-        return None, {'display': 'none'}, {}
-    else:
-        return render_MCL(input_value, inflation_value), {}, {'display': 'none'}
+def MCL_callback(gene, num_clicks, inflation_value=2):
+    if num_clicks % 2 == 0:
+        return {}, {'display': 'none'}, {}, app.get_asset_url('clustering/MCL/' + gene + '.html')
+    elif num_clicks % 2 != 0 and inflation_value != 2:
+        return render_MCL(gene, inflation_value), {}, {'display': 'none'}, app.get_asset_url('clustering/MCL/' + gene + '.html')
 
 
 # ----------------------- Redo clustering with user selected hyperparameters if sliders are used -----------------------
 @app.callback(Output(component_id='DBSCAN-fig', component_property='figure'),
               Output(component_id='DBSCAN-fig', component_property='style'),
               Output(component_id='DBSCAN-iframe', component_property='style'),
+              Output(component_id='DBSCAN-iframe', component_property='src'),
               [Input(component_id='gene-selector', component_property='value'),
                Input(component_id='hyperparameter-toggle-btn', component_property='n_clicks'),
                Input(component_id='min-pts-slider', component_property='value'),
                Input(component_id='epsilon-slider', component_property='value')])
-def DBSCAN_callback(input_value, num_clicks, min_samples_input, epsilon_input):
-    if num_clicks == 0:
-        raise PreventUpdate
-    elif num_clicks % 2 == 0:
-        return None, {'display': 'none'}, {}
-    else:
-        return render_DBSCAN(input_value, min_samples=min_samples_input, eps=epsilon_input), {}, {'display': 'none'}
+def DBSCAN_callback(gene, num_clicks, min_samples, epsilon):
+    if num_clicks % 2 == 0:
+        return {}, {'display': 'none'}, {}, app.get_asset_url('clustering/DBSCAN/' + gene + '.html')
+    elif num_clicks % 2 != 0 and (min_samples != 5 and epsilon != 0.5):
+        return render_DBSCAN(gene, min_samples=min_samples, eps=epsilon), {}, {'display': 'none'}, app.get_asset_url('clustering/DBSCAN/' + gene + '.html')
 
 
 # ------------------------------------ Show circle spinner while graphs are loading ------------------------------------
@@ -540,12 +546,10 @@ def clustermap_loading_callback(input_value):
     time.sleep(1)
 
 
-# Show loading animation for UPGMA graph window when user is selecting gene from dropdown
 @app.callback(Output(component_id='clustering-loading', component_property='children'),
-              [Input(component_id='gene-selector', component_property='value')])
+              [Input(component_id='MCL', component_property='value')])
 def clustering_loading_callback(input_value):
     time.sleep(1)
-
 
 # ---------- Hide secondary window for showing genome surrogates unless 'Unique neighborhoods only' selected -----------
 @app.callback(Output(component_id='surrogates-md', component_property='children'),
@@ -570,4 +574,4 @@ def clustermap_loading_callback(input_value):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)

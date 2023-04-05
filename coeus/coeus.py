@@ -6,17 +6,14 @@ import numpy as np
 import pandas as pd
 
 import dash
-from dash import dcc
+from dash import dcc, DiskcacheManager
 from dash import html
 import dash_bootstrap_components as dbc
-from dash.exceptions import PreventUpdate
-from dash_bootstrap_templates import load_figure_template
 from dash.dependencies import Input, Output, State
 import functools
 
 from scipy.cluster import hierarchy
 from scipy import sparse
-from scipy.spatial.distance import pdist, squareform
 import networkx as nx
 import plotly.express as px
 import plotly.graph_objects as go
@@ -27,7 +24,18 @@ from sklearn.preprocessing import StandardScaler
 from skbio.stats.ordination import pcoa
 import random
 
+from uuid import uuid4
+import diskcache
 
+# ------------------------------------------------ LOCAL CACHING SETUP  ------------------------------------------------
+# Initialize caching: assumes app is launched locally
+launch_uid = uuid4()
+cache = diskcache.Cache("./cache")
+background_callback_manager = DiskcacheManager(
+    cache, cache_by=[lambda: launch_uid], expire=3600
+)
+
+# ------------------------------------------- GENERAL APPLICATION METHODS ----------------------------------------------
 def get_colors(num):
     """
     Color mapping for visualizations.
@@ -359,7 +367,8 @@ def plotly_pcoa(distance_matrix_df, genome_ids, labels, AMR_gene):
 
 
 # --------------------------------------------------- DASHBOARD --------------------------------------------------------
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.LUX])
+app = dash.Dash(__name__, background_callback_manager=background_callback_manager,
+                          external_stylesheets=[dbc.themes.LUX])
 server = app.server
 app.config.suppress_callback_exceptions = True
 app.title = 'Gene neighborhoods visualizer'

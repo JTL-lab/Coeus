@@ -32,7 +32,7 @@ import diskcache
 launch_uid = uuid4()
 cache = diskcache.Cache("./cache")
 background_callback_manager = DiskcacheManager(
-    cache, cache_by=[lambda: launch_uid], expire=3600
+    cache, cache_by=[lambda: launch_uid]
 )
 
 # ------------------------------------------- GENERAL APPLICATION METHODS ----------------------------------------------

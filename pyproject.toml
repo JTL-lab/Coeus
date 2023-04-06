@@ -11,7 +11,7 @@ keywords = ["coeus", "gene order", "clustering", "visualisation"]
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"
-dash = "2.7.0"
+dash = {extras = ["diskcache"], version = "^2.9.2"}
 dash-bootstrap-components = "1.2.1"
 flask = "2.2.2"
 ipython = "8.6.0"
@@ -99,6 +99,7 @@ plotly-express = "0.4.1"
 scikit-bio = "0.5.7"
 scikit-learn = "1.0.2"
 statsmodels = "0.13.5"
+diskcache = "^5.4.0"
 
 [build-system]
 requires = ["poetry-core"]

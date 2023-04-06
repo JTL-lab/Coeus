@@ -15,11 +15,12 @@ export default function legend(colourScale) {
 
   function my(selection) {
     selection.each(function (data) {
-      // Grab new domain from colourScale and update the y-scale
-      let visible = data.groups.filter(
-        (g) => !hidden.includes(g.uid) && !g.hidden
-      );
+      // Sort the visible data array by gene name
+      let visible = data.groups
+        .filter((g) => !hidden.includes(g.uid) && !g.hidden)
+        .sort((a, b) => a.label.localeCompare(b.label));
 
+      // Update the y-scale domain with the sorted data
       y.domain(visible.map((v) => v.uid)).range([
         0,
         entryHeight * visible.length,
@@ -74,19 +75,19 @@ export default function legend(colourScale) {
   }
 
   function updateLegend(selection) {
-    selection.attr("transform", (d) => `translate(0, ${y(d.uid)})`);
-    let half = y.bandwidth() / 2;
-    selection
-      .selectAll("text")
-      .text((d) => d.label)
-      .attr("x", half + 6)
-      .attr("y", half + 1)
-      .style("font-size", `${fontSize}px`);
-    selection
-      .selectAll("circle")
-      .attr("cy", half)
-      .attr("r", half)
-      .attr("fill", (d) => colourScale(d.uid));
+  selection.attr("transform", (d) => `translate(0, ${y(d.uid)})`);
+  let half = y.bandwidth() / 2;
+  selection
+    .selectAll("text")
+    .text((d) => d.label)
+    .attr("x", half + 6)
+    .attr("y", half + 1)
+    .style("font-size", `${fontSize}px`);
+  selection
+    .selectAll("circle")
+    .attr("cy", half)
+    .attr("r", half)
+    .attr("fill", (d) => d.uid === "default" ? "#1E1E1E" : colourScale(d.uid));
   }
 
   my.colourScale = (_) =>

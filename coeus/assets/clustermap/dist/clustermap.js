@@ -187,8 +187,8 @@
   const scales = {
     x: d3.scaleLinear().domain([1, 1001]).range([0, config.plot.scaleFactor]),
     y: d3.scaleOrdinal(),
-    group: d3.scaleOrdinal().unknown(null).range(["#1E1E1E"]),
-    colour: d3.scaleOrdinal().unknown("#bbb").range(["#1E1E1E"]),
+    group: d3.scaleOrdinal().unknown(null),
+    colour: d3.scaleOrdinal().unknown("#bbb"),
     name: d3.scaleOrdinal().unknown("None"),
     score: d3.scaleSequential(d3.interpolateGreys).domain([0, 1]),
     offset: d3.scaleOrdinal(),

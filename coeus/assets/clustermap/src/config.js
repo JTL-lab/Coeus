@@ -12,20 +12,15 @@ export default {
     onClickCircle: null,
     onClickText: null,
     show: true,
-    /* Control gene group legend placement in dashboard*/
-    marginLeft: 50,
-    marginTop: 100,
+    marginLeft: 20,
   },
-  /* Controls % identity bar */
   colourBar: {
     fontSize: 10,
-    height: 14,
+    height: 12,
     show: true,
     width: 150,
-    marginTop: 50,
-    marginLeft: 2200,
+    marginTop: 20,
   },
-  /* Controls scale bar next to % identity bar */
   scaleBar: {
     colour: "black",
     fontSize: 10,
@@ -33,8 +28,7 @@ export default {
     basePair: 2500,
     show: true,
     stroke: 1,
-    marginTop: 50,
-    marginLeft: 2000,
+    marginTop: 20,
   },
   link: {
     show: true,
@@ -55,12 +49,12 @@ export default {
     nameFontSize: 12,
     lociFontSize: 10,
     hideLocusCoordinates: false,
-    spacing: 30,
+    spacing: 40,
     alignLabels: true,
   },
   locus: {
     trackBar: {
-      colour: "#000000",
+      colour: "#111",
       stroke: 1,
     },
     spacing: 50,

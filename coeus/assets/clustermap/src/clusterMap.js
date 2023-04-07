@@ -183,14 +183,9 @@ export default function clusterMap() {
             locus._bio_end = locus.end;
             locus.start = 0;
             locus.end = locus._bio_end - locus._bio_start;
-            var i = 0;
             for (const gene of locus.genes) {
               gene._start = gene.start - locus._bio_start;
               gene._end = gene.end - locus._bio_start;
-              if (i == Math.floor(data.length / 2)) {
-                enter.select(gene.shape).style("strokeWidth", 2);
-              }
-              i += 1;
             }
           }
           enter = enter
@@ -357,12 +352,6 @@ export default function clusterMap() {
         gene._start = gene._start || gene.start;
         gene._end = gene._end || gene.end;
         gene._strand = gene._strand || gene.strand;
-      });
-      // Code I added to try to highlight focal gene (ahhhhh)
-      locus.genes.forEach(function(gene, index) {
-        if (index == Math.floor(locus.genes.length / 2)) {
-          d3.select("g.locus.genes.gene.shape").style("strokeWidth", 2);
-        }
       });
     });
   }

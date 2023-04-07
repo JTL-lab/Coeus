@@ -61,8 +61,8 @@ const plot = {
 const scales = {
   x: d3.scaleLinear().domain([1, 1001]).range([0, config.plot.scaleFactor]),
   y: d3.scaleOrdinal(),
-  group: d3.scaleOrdinal().unknown(null),
-  colour: d3.scaleOrdinal().unknown("#bbb"),
+  group: d3.scaleOrdinal().range(["#bbbbbb"]).unknown("#ffffff"),
+  colour: d3.scaleOrdinal().domain([0,1]).range(["#bbbbbb"]).unknown("#ffffff"),
   name: d3.scaleOrdinal().unknown("None"),
   score: d3.scaleSequential(d3.interpolateGreys).domain([0, 1]),
   offset: d3.scaleOrdinal(),
@@ -73,7 +73,7 @@ const _gene = {
   getId: (d) => `gene_${d.uid}`,
   fill: (g) => {
     if (g.colour) return g.colour;
-    if (!scales.group) return "#bbb";
+    if (!scales.group) return "#bbbbbb";
     let groupId = scales.group(g.uid);
     return scales.colour(groupId);
   },
@@ -896,7 +896,7 @@ const _link = {
     let uids = groups.map((g) => g.uid);
     scales.group.domain(domain).range(range);
     scales.name.domain(uids).range(groups.map((g) => g.label));
-    let colours = d3.quantize(d3.interpolateRainbow, groups.length + 1);
+    let colours = d3.range(1000).map(() => "#bbbbbb");
     groups.forEach((group, index) => {
       if (group.colour) colours[index] = group.colour;
       else group.colour = colours[index];

@@ -9,7 +9,8 @@ import dash
 from dash import dcc, DiskcacheManager
 from dash import html
 import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Input, Output, State, ClientsideFunction
+from dash import dash_table
 import functools
 
 from scipy.cluster import hierarchy
@@ -35,21 +36,23 @@ background_callback_manager = DiskcacheManager(
     cache, cache_by=[lambda: launch_uid]
 )
 
+
 # ------------------------------------------- GENERAL APPLICATION METHODS ----------------------------------------------
 def get_colors(num):
     """
     Color mapping for visualizations.
     """
     colors = ['#6e40aa', '#b83cb0', '#c33dad', '#ff4f7c', '#f6478d', '#ff6956', '#f59f30', '#c4d93e',
-               '#83f557', '#38f17a', '#22e599', '#19d3b5', '#29a0dd', '#5069d9', '#5f56c9', '#bbbbbb']
+              '#83f557', '#38f17a', '#22e599', '#19d3b5', '#29a0dd', '#5069d9', '#5f56c9', '#bbbbbb']
 
     if num <= len(colors):
         return colors
     else:
         for i in range(num - len(colors)):
-            rand_color = lambda: random.randint(0,255)
+            rand_color = lambda: random.randint(0, 255)
             colors.append('#%02X%02X%02X' % (rand_color(), rand_color(), rand_color()))
         return colors
+
 
 def get_gene_options():
     """
@@ -81,6 +84,22 @@ def get_gene_surrogates(gene):
     with open('assets/clustermap/JSON/surrogates/' + gene + '_surrogates.txt', 'r') as infile:
         data = infile.readlines()
     return data
+
+
+def gene_surrogates_to_df(gene):
+    """
+    Retrieves data from surrogate textfile as a Pandas dataframe for easy loading into a Dash Datatable.
+    """
+    try:
+        df = pd.read_csv('assets/clustermap/JSON/surrogates/' + gene + '_surrogates.txt', delimiter=':',
+                     names=['Surrogate Genome', 'Represented Genomes'])
+        df['Represented Genomes'] = df['Represented Genomes'].str.strip(' []')
+
+    except AttributeError:
+        df = pd.read_csv('assets/clustermap/JSON/surrogates/' + gene + '_surrogates.txt', delimiter=':',
+                         names=['Surrogate Genome'])
+
+    return df
 
 
 def load_gene_json(gene):
@@ -368,7 +387,9 @@ def plotly_pcoa(distance_matrix_df, genome_ids, labels, AMR_gene):
 
 # --------------------------------------------------- DASHBOARD --------------------------------------------------------
 app = dash.Dash(__name__, background_callback_manager=background_callback_manager,
-                          external_stylesheets=[dbc.themes.LUX])
+                external_stylesheets=[dbc.themes.LUX],
+                external_scripts=['https://cdn.plot.ly/plotly-2.3.0.min.js']
+                )
 server = app.server
 app.config.suppress_callback_exceptions = True
 app.title = 'Gene neighborhoods visualizer'
@@ -383,18 +404,13 @@ app.layout = html.Div(children=[
 
                               # Pane header: ARETE logo + dashboard title!
                               dbc.Row([
-                                  #html.Div(className='two columns',
-                                  #         children=[
-                                  #             html.Img(src=app.get_asset_url('arete_logo.png'),
-                                  #                      style={'max-width': '400px', 'height': '90px', 'float': 'left',
-                                  #                             'padding-left': '10px'})
-                                  #         ]),
                                   html.Div(className='two columns',
                                            children=[
                                                html.Img(src=app.get_asset_url('coeus-logo-dark.png'),
                                                         style={'max-width': '800px', 'height': '120px', 'float': 'left',
                                                                'padding-left': '170px', 'padding-top': '5px'})
-                                           ])
+                                           ],
+                                           style={'text-align': 'center'})
                               ], style={'padding-top': '20px'}),
 
                               html.P("Coeus allows for easy comparison of a given "
@@ -417,17 +433,18 @@ app.layout = html.Div(children=[
                                                  options=['All genomes', 'Unique neighborhoods only',
                                                           'Representative UPGMA cluster'],
                                                  labelStyle={'display': 'block'},
-                                                 value='All genomes', style={'color': '#dc2284',
-                                                                             'font-size': '11pt',
-                                                                             'padding-right': '25px',
-                                                                             'padding-bottom': '25px',
-                                                                             'margin-right': '25px'}),
+                                                 value='Unique neighborhoods only', style={'color': '#dc2284',
+                                                                                           'font-size': '11pt',
+                                                                                           'padding-right': '25px',
+                                                                                           'padding-bottom': '25px',
+                                                                                           'margin-right': '25px'}),
                                   html.Button('Toggle clustering hyperparameters',
                                               id='hyperparameter-toggle-btn',
                                               n_clicks=0,
                                               style={'background-color': '#7571B4', 'color': '#393939'}),
-                                  html.P('Note: For larger datasets, hyperparameter changes may take some time to update.',
-                                         style={'font-size': '11pt', 'padding-top': '25px'}),
+                                  html.P(
+                                      'Note: For larger datasets, hyperparameter changes may take some time to update.',
+                                      style={'font-size': '11pt', 'padding-top': '25px'}),
                                   html.Div([
                                       html.P('Toggle hyperparameters:', style={'color': '#FFFFFF',
                                                                                'font-size': '13pt',
@@ -457,8 +474,12 @@ app.layout = html.Div(children=[
                          ),
                          html.Iframe(src=app.get_asset_url('assets/clustermap/JSON/' + get_gene_names()[0] + '.html'),
                                      id='clustermap', title='clustermap'),
-                         dcc.Markdown(children=None, id='surrogates-md',
-                                      style={'color': 'black', 'font-weight': 700, 'overflow': 'scroll'})
+                         # dcc.Markdown(children=None, id='surrogates-md',
+                         #              style={'color': 'black', 'font-weight': 700, 'overflow': 'scroll'})
+                         dbc.Table.from_dataframe(df=gene_surrogates_to_df(get_gene_names()[0]),
+                                   id='surrogates-table', bordered=True, hover=True,
+                                   style={'color': 'black', 'font-size': 12, 'height': 200, 'width': 2400,
+                                          'display': 'inline', 'overflow': 'auto'})
                      ])
                  ]),
 
@@ -504,16 +525,16 @@ def clustering_hyperparameters_callback(num_clicks):
               [Input(component_id='gene-selector', component_property='value'),
                Input(component_id='clustermap-mode', component_property='value')])
 def clustermap_callback(gene_value, mode_value):
-    if mode_value == 'Unique neighborhoods only':
-        return app.get_asset_url('clustermap/JSON/' + gene_value + '_surrogates.html')
+    if mode_value == 'All genomes':
+        return app.get_asset_url('clustermap/JSON/' + gene_value + '.html')
     elif mode_value == 'Representative UPGMA cluster':
         return app.get_asset_url('clustermap/JSON/' + gene_value + '_upgma.html')
     else:
-        return app.get_asset_url('clustermap/JSON/' + gene_value + '.html')
+        return app.get_asset_url('clustermap/JSON/' + gene_value + '_surrogates.html')
 
 
 @app.callback(Output(component_id='UPGMA-iframe', component_property='src'),
-             [Input(component_id='gene-selector', component_property='value')])
+              [Input(component_id='gene-selector', component_property='value')])
 def UPGMA_callback(gene):
     return app.get_asset_url('clustering/UPGMA/' + gene + '.html')
 
@@ -529,7 +550,8 @@ def MCL_callback(gene, num_clicks, inflation_value=2):
     if num_clicks % 2 == 0:
         return {}, {'display': 'none'}, {}, app.get_asset_url('clustering/MCL/' + gene + '.html')
     elif num_clicks % 2 != 0 and inflation_value != 2:
-        return render_MCL(gene, inflation_value), {}, {'display': 'none'}, app.get_asset_url('clustering/MCL/' + gene + '.html')
+        return render_MCL(gene, inflation_value), {}, {'display': 'none'}, app.get_asset_url(
+            'clustering/MCL/' + gene + '.html')
 
 
 # ----------------------- Redo clustering with user selected hyperparameters if sliders are used -----------------------
@@ -545,7 +567,8 @@ def DBSCAN_callback(gene, num_clicks, min_samples, epsilon):
     if num_clicks % 2 == 0:
         return {}, {'display': 'none'}, {}, app.get_asset_url('clustering/DBSCAN/' + gene + '.html')
     elif num_clicks % 2 != 0 and (min_samples != 5 and epsilon != 0.5):
-        return render_DBSCAN(gene, min_samples=min_samples, eps=epsilon), {}, {'display': 'none'}, app.get_asset_url('clustering/DBSCAN/' + gene + '.html')
+        return render_DBSCAN(gene, min_samples=min_samples, eps=epsilon), {}, {'display': 'none'}, app.get_asset_url(
+            'clustering/DBSCAN/' + gene + '.html')
 
 
 # ------------------------------------ Show circle spinner while graphs are loading ------------------------------------
@@ -560,16 +583,20 @@ def clustermap_loading_callback(input_value):
 def clustering_loading_callback(input_value):
     time.sleep(1)
 
+
 # ---------- Hide secondary window for showing genome surrogates unless 'Unique neighborhoods only' selected -----------
-@app.callback(Output(component_id='surrogates-md', component_property='children'),
-              Output(component_id='surrogates-md', component_property='style'),
+@app.callback(Output(component_id='surrogates-table', component_property='children'),
+              Output(component_id='surrogates-table', component_property='style'),
               [Input(component_id='clustermap-mode', component_property='value'),
                Input(component_id='gene-selector', component_property='value')])
-def clustermap_loading_callback(input_mode, input_value):
-    if input_mode == 'Unique neighborhoods only':
-        return get_gene_surrogates(input_value), {'height': 200, 'width': 2400, 'display': 'inline'}
+def clustermap_loading_callback(input_mode, gene):
+    if input_mode == 'Unique neighborhoods only' and gene is not None:
+        df = gene_surrogates_to_df(gene)
+        return dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True), \
+               {'color': 'black', 'font-size': 12, 'height': 200, 'width': 2400,'display': 'inline', 'overflow': 'auto'}
     else:
-        return None, {'height': 200, 'width': 2400, 'display': 'none'}
+        return '', {'height': 200, 'width': 2400, 'display': 'none'}
+
 
 
 # ------- Show surrogates list in markdown format below clustermap viz if 'Unique neighborhoods only' is selected ------
@@ -583,4 +610,4 @@ def clustermap_loading_callback(input_value):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True)

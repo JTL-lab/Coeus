@@ -373,9 +373,13 @@ def plotly_pcoa(distance_matrix_df, genome_ids, labels, AMR_gene):
     df = pd.DataFrame(data=df_data, index=genome_ids)
     df['Cluster'] = df['Cluster'].astype(str)
 
+    # Make noise cluster black by default
+    colors = get_colors(len(genome_ids))
+    colors.insert(0, '#111111')
+
     fig = px.scatter(df, x='PC1', y='PC2',
                      color='Cluster',
-                     color_discrete_sequence=get_colors(len(genome_ids)),
+                     color_discrete_sequence=colors,
                      hover_name='GenomeID',
                      title='PCoA DBSCAN clusters for {g}'.format(g=AMR_gene))
     fig.update_traces(marker_size=5, line=dict(width=2, color='black'))
@@ -474,8 +478,6 @@ app.layout = html.Div(children=[
                          ),
                          html.Iframe(src=app.get_asset_url('assets/clustermap/JSON/' + get_gene_names()[0] + '.html'),
                                      id='clustermap', title='clustermap'),
-                         # dcc.Markdown(children=None, id='surrogates-md',
-                         #              style={'color': 'black', 'font-weight': 700, 'overflow': 'scroll'})
                          dbc.Table.from_dataframe(df=gene_surrogates_to_df(get_gene_names()[0]),
                                    id='surrogates-table', bordered=True, hover=True,
                                    style={'color': 'black', 'font-size': 12, 'height': 200, 'width': 2400,
@@ -550,8 +552,8 @@ def MCL_callback(gene, num_clicks, inflation_value=2):
     if num_clicks % 2 == 0:
         return {}, {'display': 'none'}, {}, app.get_asset_url('clustering/MCL/' + gene + '.html')
     elif num_clicks % 2 != 0 and inflation_value != 2:
-        return render_MCL(gene, inflation_value), {}, {'display': 'none'}, app.get_asset_url(
-            'clustering/MCL/' + gene + '.html')
+        return render_MCL(gene, inflation_value), {}, {'display': 'none'}, \
+               app.get_asset_url('clustering/MCL/' + gene + '.html')
 
 
 # ----------------------- Redo clustering with user selected hyperparameters if sliders are used -----------------------
@@ -592,7 +594,7 @@ def clustering_loading_callback(input_value):
 def clustermap_loading_callback(input_mode, gene):
     if input_mode == 'Unique neighborhoods only' and gene is not None:
         df = gene_surrogates_to_df(gene)
-        return dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True), \
+        return dbc.Table.from_dataframe(df, bordered=True, hover=True), \
                {'color': 'black', 'font-size': 12, 'height': 200, 'width': 2400,'display': 'inline', 'overflow': 'auto'}
     else:
         return '', {'height': 200, 'width': 2400, 'display': 'none'}
@@ -610,4 +612,4 @@ def clustermap_loading_callback(input_value):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)

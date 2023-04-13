@@ -36,7 +36,6 @@ background_callback_manager = DiskcacheManager(
     cache, cache_by=[lambda: launch_uid]
 )
 
-
 # ------------------------------------------- GENERAL APPLICATION METHODS ----------------------------------------------
 def get_colors(num):
     """
@@ -405,23 +404,23 @@ app.layout = html.Div(children=[
                  # Left hand pane for user controls
                  html.Div(className='three columns div--user-controls',
                           children=[
-
                               # Pane header: ARETE logo + dashboard title!
-                              dbc.Row([
-                                  html.Div(className='two columns',
-                                           children=[
-                                               html.Img(src=app.get_asset_url('coeus-logo-dark.png'),
-                                                        style={'max-width': '800px', 'height': '120px', 'float': 'left',
-                                                               'padding-left': '170px', 'padding-top': '5px'})
-                                           ],
-                                           style={'text-align': 'center'})
-                              ], style={'padding-top': '20px'}),
+                              html.Div([
+                                  dbc.Row([
+                                      html.Div(className='one column',
+                                      children=[html.Img(src=app.get_asset_url('coeus-logo-dark.svg'),
+                                                         style={'float': 'left'}
+                                                         )
+                                  ])
+                              ]),
+                              ], style={'padding-top': '20px', 'align-items': 'center', 'display': 'flex', 'justify-content': 'center'}),
+
 
                               html.P("Coeus allows for easy comparison of a given "
                                      "gene's neighborhoods across multiple "
                                      "genomes, along with the neighborhoods' clusterings using three algorithms "
                                      "(UPGMA, MCL, and DBSCAN) to provide additional context on their similarities "
-                                     "and differences.", style={'font-size': '10pt', 'padding-top': '20px',
+                                     "and differences.", style={'font-size': '10pt', 'padding-top': '10px',
                                                                 'padding-left': '25px', 'padding-bottom': '11px'}),
 
                               # Pane content
@@ -455,7 +454,7 @@ app.layout = html.Div(children=[
                                                                                'padding-top': '25px'}),
                                       html.P('MCL Inflation:', style={'color': '#dc2284', 'font-size': '13pt',
                                                                       'padding-top': '10px'}),
-                                      dcc.Slider(1, 15, 1, value=2, id='inflation-slider'),
+                                      dcc.Slider(2, 20, 1, value=2, id='inflation-slider'),
                                       html.P('DBSCAN Minimum Points:', style={'color': '#dc2284', 'font-size': '13pt',
                                                                               'padding-top': '10px'}),
                                       dcc.Slider(1, 20, 1, value=5, id='min-pts-slider'),
@@ -464,7 +463,7 @@ app.layout = html.Div(children=[
                                       dcc.Slider(0.1, 1, 0.1, value=0.5, id='epsilon-slider')
                                   ], id='clustering-hyperparameters-div'),
                               ], style={'padding-left': '20px', 'padding-right': '20px', 'padding-top': '20px'})
-                          ]
+                          ],
                           ),
 
                  # Gene order visualizations pane
@@ -551,7 +550,7 @@ def UPGMA_callback(gene):
 def MCL_callback(gene, num_clicks, inflation_value=2):
     if num_clicks % 2 == 0:
         return {}, {'display': 'none'}, {}, app.get_asset_url('clustering/MCL/' + gene + '.html')
-    elif num_clicks % 2 != 0 and inflation_value != 2:
+    elif num_clicks % 2 != 0:
         return render_MCL(gene, inflation_value), {}, {'display': 'none'}, \
                app.get_asset_url('clustering/MCL/' + gene + '.html')
 
@@ -565,10 +564,10 @@ def MCL_callback(gene, num_clicks, inflation_value=2):
                Input(component_id='hyperparameter-toggle-btn', component_property='n_clicks'),
                Input(component_id='min-pts-slider', component_property='value'),
                Input(component_id='epsilon-slider', component_property='value')])
-def DBSCAN_callback(gene, num_clicks, min_samples, epsilon):
+def DBSCAN_callback(gene, num_clicks, min_samples=5, epsilon=0.5):
     if num_clicks % 2 == 0:
         return {}, {'display': 'none'}, {}, app.get_asset_url('clustering/DBSCAN/' + gene + '.html')
-    elif num_clicks % 2 != 0 and (min_samples != 5 and epsilon != 0.5):
+    elif num_clicks % 2 != 0:
         return render_DBSCAN(gene, min_samples=min_samples, eps=epsilon), {}, {'display': 'none'}, app.get_asset_url(
             'clustering/DBSCAN/' + gene + '.html')
 
@@ -595,10 +594,10 @@ def clustermap_loading_callback(input_mode, gene):
     if input_mode == 'Unique neighborhoods only' and gene is not None:
         df = gene_surrogates_to_df(gene)
         return dbc.Table.from_dataframe(df, bordered=True, hover=True), \
-               {'color': 'black', 'font-size': 12, 'height': 200, 'width': 2400,'display': 'inline', 'overflow': 'auto'}
+               {'color': 'black', 'font-size': 12, 'height': 200, 'width': 2400,
+                'display': 'inline', 'overflow': 'auto'}
     else:
         return '', {'height': 200, 'width': 2400, 'display': 'none'}
-
 
 
 # ------- Show surrogates list in markdown format below clustermap viz if 'Unique neighborhoods only' is selected ------
@@ -612,4 +611,4 @@ def clustermap_loading_callback(input_value):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True)

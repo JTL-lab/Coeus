@@ -1,8 +1,4 @@
-SA20153983
-SA20160197: [SA20160326, SA20160170, SA20160203, SA20160209, SA20160200]
-SA20160228
-SA20160201: [SA20160172]
-SA20160323
-SA20160210
-SA20153980
-SA20160190
+Salmonella Heidelberg 6: [Salmonella Heidelberg 14, Salmonella Heidelberg 3, Salmonella Heidelberg 9, Salmonella Heidelberg 10, Salmonella Heidelberg 7]
+
+Salmonella Heidelberg 8: [Salmonella Heidelberg 4]
+

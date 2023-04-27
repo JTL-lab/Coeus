@@ -4,6 +4,7 @@ import time
 import json
 import numpy as np
 import pandas as pd
+import copy
 
 import dash
 from dash import dcc, DiskcacheManager
@@ -12,6 +13,7 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State, ClientsideFunction
 from dash import dash_table
 import functools
+from plotly.subplots import make_subplots
 
 from scipy.cluster import hierarchy
 from scipy import sparse
@@ -20,6 +22,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.figure_factory import create_dendrogram
 import markov_clustering as mcl
+from scipy.spatial.distance import pdist
 from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import StandardScaler
 from skbio.stats.ordination import pcoa
@@ -186,7 +189,6 @@ def get_UPGMA_filtering_params(gene):
 
     return dcc.RadioItems(sorted_node_heights, value=max_height, id='upgma-filter')
 
-
 # ----------------------------------- FUNCTIONS FOR APPLYING CLUSTERING ALGORITHMS  ------------------------------------
 @functools.lru_cache(maxsize=32)
 def render_UPGMA(gene):
@@ -195,11 +197,14 @@ def render_UPGMA(gene):
     """
     distance_matrix_df = load_distance_matrix(gene)
     genome_names = list(distance_matrix_df.columns)
-    dendrogram_fig = plotly_dendrogram(distance_matrix_df.values, genome_names, gene)
+    fig = plotly_dendrogram(distance_matrix_df.values, genome_names, gene)
 
-    linkage_matrix = hierarchy.linkage(distance_matrix_df.values, method='average')
-    dendrogram = hierarchy.dendrogram(linkage_matrix, labels=genome_names)
-    return dendrogram_fig
+    if len(genome_names) > 20:
+        fig.update_layout(xaxis={"visible": False})
+    else:
+        fig.update_layout(xaxis={"visible": True})
+
+    return fig
 
 
 @functools.lru_cache(maxsize=32)
@@ -389,13 +394,21 @@ def plotly_pcoa(distance_matrix_df, genome_ids, labels, AMR_gene):
 
 
 # --------------------------------------------------- DASHBOARD --------------------------------------------------------
+assets_path = sys.argv[1] if len(sys.argv) > 1 else "assets/"
+
 app = dash.Dash(__name__, background_callback_manager=background_callback_manager,
+                assets_folder=assets_path,
                 external_stylesheets=[dbc.themes.LUX],
                 external_scripts=['https://cdn.plot.ly/plotly-2.3.0.min.js']
                 )
 server = app.server
 app.config.suppress_callback_exceptions = True
 app.title = 'Gene neighborhoods visualizer'
+
+# Take user provided paths for resources if available, otherwise fall back on defaults
+#clustering_path = sys.argv[1] if len(sys.argv) > 1 else "clustering/"
+#json_path = sys.argv[2] if len(sys.argv) > 2 else "assets/clustermap/JSON/"
+#d3_path = sys.argv[3] if len(sys.arg)
 
 app.layout = html.Div(children=[
     html.Div(className='row',
@@ -409,8 +422,7 @@ app.layout = html.Div(children=[
                                   dbc.Row([
                                       html.Div(className='one column',
                                       children=[html.Img(src=app.get_asset_url('coeus-logo-dark.svg'),
-                                                         style={'float': 'left'}
-                                                         )
+                                                         style={'float': 'left'})
                                   ])
                               ]),
                               ], style={'padding-top': '20px', 'align-items': 'center', 'display': 'flex', 'justify-content': 'center'}),
@@ -493,8 +505,7 @@ app.layout = html.Div(children=[
                          style={'padding-top': '900px'}
                      ),
                      dbc.Row([
-                         html.Iframe(src=app.get_asset_url('clustering/UPGMA/' + get_gene_names()[0] + '.html'),
-                                     id='UPGMA-iframe', title='UPGMA', width='419px', height='316px')
+                         dcc.Graph(figure=render_UPGMA(get_gene_names()[0]), id='UPGMA-fig')
                      ]),
                      dbc.Row([
                          html.Iframe(src=app.get_asset_url('clustering/MCL/' + get_gene_names()[0] + '.html'),
@@ -534,10 +545,47 @@ def clustermap_callback(gene_value, mode_value):
         return app.get_asset_url('clustermap/JSON/' + gene_value + '_surrogates.html')
 
 
-@app.callback(Output(component_id='UPGMA-iframe', component_property='src'),
-              [Input(component_id='gene-selector', component_property='value')])
-def UPGMA_callback(gene):
-    return app.get_asset_url('clustering/UPGMA/' + gene + '.html')
+@app.callback(Output(component_id='UPGMA-fig', component_property='figure'),
+              [Input(component_id='gene-selector', component_property='value'),
+               Input(component_id='UPGMA-fig', component_property='relayoutData'),
+               Input(component_id='UPGMA-fig', component_property='figure')])
+def UPGMA_callback(gene, relayout_data, fig):
+    # Case 1: User selects different gene from gene dropdown, reload figure
+    ctx = dash.callback_context
+    if ctx.triggered[0]['prop_id'] == 'gene-selector.value':
+        figure = render_UPGMA(gene)
+        return figure
+    # Case 2: Gene value not modified, but user is zooming in so check if we need to manipulate labels view
+    else:
+        # X-axis range
+        x_range = fig['layout']['xaxis']['range']
+
+        # X-axis labels from current view
+        x_labels = fig['layout']['xaxis']['ticktext']
+
+        # Count number of labels within this view
+        num_labels = len([name for name in x_labels if x_range[0] <= x_labels.index(name) <= x_range[1]])
+
+        # Hide the labels if we see more than 20 (since they render messily otherwise)
+        if num_labels > 20:
+            fig['layout']['xaxis']['visible'] = False
+        else:
+            fig['layout']['xaxis']['visible'] = True
+
+        # Check if the user has zoomed in or out
+        if relayout_data is not None:
+            if 'xaxis.range[0]' in relayout_data and 'xaxis.range[1]' in relayout_data:
+                # Recount the number of labels within the new view
+                new_x_range = [int(relayout_data['xaxis.range[0]']), int(relayout_data['xaxis.range[1]'])]
+                num_labels = len(
+                    [name for name in x_labels if new_x_range[0] <= x_labels.index(name) <= new_x_range[1]])
+                # Check if the labels need to be hidden
+                if num_labels > 20:
+                    fig['layout']['xaxis']['visible'] = False
+                else:
+                    fig['layout']['xaxis']['visible'] = True
+
+        return fig
 
 
 @app.callback(Output(component_id='MCL-fig', component_property='figure'),

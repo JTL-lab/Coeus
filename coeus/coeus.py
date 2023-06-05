@@ -4,16 +4,14 @@ import time
 import json
 import numpy as np
 import pandas as pd
-import copy
+import pathlib
 
 import dash
 from dash import dcc, DiskcacheManager
 from dash import html
 import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output, State, ClientsideFunction
-from dash import dash_table
+from dash.dependencies import Input, Output
 import functools
-from plotly.subplots import make_subplots
 
 from scipy.cluster import hierarchy
 from scipy import sparse
@@ -22,7 +20,6 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.figure_factory import create_dendrogram
 import markov_clustering as mcl
-from scipy.spatial.distance import pdist
 from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import StandardScaler
 from skbio.stats.ordination import pcoa
@@ -40,6 +37,41 @@ background_callback_manager = DiskcacheManager(
 )
 
 # ------------------------------------------- GENERAL APPLICATION METHODS ----------------------------------------------
+def symlink_dir(assets_path, dir, data_path):
+    """
+    Generates symlink to data path within assets directory.
+    """
+    link = os.path.join(assets_path, dir)
+    if os.path.islink(link):
+        os.unlink(link)
+    os.symlink(data_path, link)
+
+
+def create_assets_symlinks(path):
+    """
+    Links Coeus app to data directories outputted from Gene-Order-Workflow.
+    """
+    # Create symbolic links for the "JSON" and "clustering" subdirectories
+    if path == 'sample_data':
+        json_folder = os.path.join(pathlib.Path().resolve(), "sample_data/JSON")
+        clustering_folder = os.path.join(pathlib.Path().resolve(), "sample_data/clustering")
+    else:
+        json_folder = os.path.join(path, "JSON")
+        clustering_folder = os.path.join(path, "clustering")
+
+    # Default assets folder
+    assets_folder = "assets"
+
+    # Create symbolic links for JSON and clustering subdirectories
+    if not os.path.isdir(json_folder) or not os.path.isdir(clustering_folder):
+        print("Error: JSON and/or clustering directories missing from provided path. Please doublecheck that you are "
+              "providing the correct full filepath and retry.")
+        sys.exit(1)
+
+    symlink_dir("assets/clustermap", "JSON", json_folder)
+    symlink_dir("assets", "clustering", clustering_folder)
+
+
 def get_colors(num):
     """
     Color mapping for visualizations.
@@ -61,11 +93,10 @@ def get_gene_options():
     Retrieves all gene names in alphabetical order for user selector dropdown component of dashboard.
     """
     try:
-        json_files = os.listdir('assets/clustermap/JSON')
+        json_files = os.listdir(assets_path + '/JSON')
     except FileNotFoundError:
-        print("Error: JSON directory missing. Please follow documentation instructions for JSON directory placement.")
-        sys.exit(1)
-    all_filenames = [filename.split('.')[0] for filename in os.listdir('assets/clustermap/JSON')]
+        pass
+    all_filenames = [filename.split('.')[0] for filename in os.listdir(assets_path + '/clustermap/JSON')]
     files = [filename for filename in all_filenames if 'surrogates' not in filename and 'upgma' not in filename]
     return sorted(list(set(files)), key=str.casefold)
 
@@ -74,7 +105,7 @@ def get_gene_names():
     """
     Retrieves all gene names in alphabetical order for fetching surrogates.
     """
-    files = [filename.split('.')[0] for filename in os.listdir('assets/clustermap/JSON')]
+    files = [filename.split('.')[0] for filename in os.listdir(assets_path + '/clustermap/JSON')]
     genes = [file for file in files if not 'surrogates' in file]
     return sorted(list(set(genes)), key=str.casefold)
 
@@ -83,7 +114,7 @@ def get_gene_surrogates(gene):
     """
     Retrieves data from surrogate textfile to display if 'Representative neighborhoods only' view mode is selected.
     """
-    with open('assets/clustermap/JSON/surrogates/' + gene + '_surrogates.txt', 'r') as infile:
+    with open(assets_path + 'clustermap/JSON/surrogates/' + gene + '_surrogates.txt', 'r') as infile:
         data = infile.readlines()
     return data
 
@@ -93,12 +124,12 @@ def gene_surrogates_to_df(gene):
     Retrieves data from surrogate textfile as a Pandas dataframe for easy loading into a Dash Datatable.
     """
     try:
-        df = pd.read_csv('assets/clustermap/JSON/surrogates/' + gene + '_surrogates.txt', delimiter=':',
+        df = pd.read_csv(assets_path + '/clustermap/JSON/surrogates/' + gene + '_surrogates.txt', delimiter=':',
                      names=['Surrogate Genome', 'Represented Genomes'])
         df['Represented Genomes'] = df['Represented Genomes'].str.strip(' []')
 
     except AttributeError:
-        df = pd.read_csv('assets/clustermap/JSON/surrogates/' + gene + '_surrogates.txt', delimiter=':',
+        df = pd.read_csv(assets_path + '/clustermap/JSON/surrogates/' + gene + '_surrogates.txt', delimiter=':',
                          names=['Surrogate Genome'])
 
     return df
@@ -109,14 +140,14 @@ def load_gene_json(gene):
     Updates index.html for rendering gene order visualization using clustermap.js to load the JSON file corresponding
     to the gene the user chose from the dropdown.
     """
-    with open('assets/clustermap/JSON/index.html', 'r') as infile:
+    with open(assets_path + '/JSON/index.html', 'r') as infile:
         data = infile.readlines()
 
     # Modify which gene's JSON is being loaded
     data[89] = '\t\td3.json("' + gene + '.json"' + ')\n'
 
     # Edit index file
-    with open('assets/clustermap/JSON/index.html', 'w') as outfile:
+    with open(assets_path + '/JSON/index.html', 'w') as outfile:
         outfile.writelines(data)
 
 
@@ -125,11 +156,11 @@ def filter_incomplete_neighborhoods(gene, neighborhood_size, surrogates=False):
     Modifies data being rendered in gene order visualization: shows only complete neighborhoods
     """
     if surrogates:
-        filename = 'assets/clustermap/JSON/' + gene + '_surrogates.json'
+        filename = assets_path + '/clustermap/JSON/' + gene + '_surrogates.json'
     else:
-        filename = 'assets/clustermap/JSON/' + gene + '.json'
+        filename = assets_path + '/clustermap/JSON/' + gene + '.json'
 
-    with open('assets/clustermap/JSON/' + gene + '_surrogates.json', 'r') as infile:
+    with open(assets_path + '/clustermap/JSON/' + gene + '_surrogates.json', 'r') as infile:
         if len(infile.readlines()) != 0:
             infile.seek(0)
             json_data = json.load(infile)
@@ -148,7 +179,7 @@ def load_similarity_matrix(gene):
     """
     Loads similarity matrix required for rendering MCL clustering.
     """
-    df = pd.read_csv('assets/clustering/similarity_matrices/' + gene + '_similarity_matrix.csv', sep='\t')
+    df = pd.read_csv(assets_path + '/clustering/similarity_matrices/' + gene + '_similarity_matrix.csv', sep='\t')
     return df
 
 
@@ -156,7 +187,7 @@ def load_distance_matrix(gene):
     """
     Loads distance matrix required for rendering UPGMA and DBSCAN clustering.
     """
-    df = pd.read_csv('assets/clustering/distance_matrices/' + gene + '_distance_matrix.csv', sep='\t')
+    df = pd.read_csv(assets_path + '/clustering/distance_matrices/' + gene + '_distance_matrix.csv', sep='\t')
     return df
 
 
@@ -241,11 +272,11 @@ def render_DBSCAN(gene, min_samples=5, eps=0.5):
 
 
 # ----------------------------------- FUNCTIONS FOR GENERATING CLUSTERING GRAPHS ---------------------------------------
-def plotly_dendrogram(linkage_matrix, genome_names, AMR_gene):
+def plotly_dendrogram(linkage_matrix, genome_names, gene):
     """
     Generates an interactive dendrogram visualization using Plotly figure factory.
     """
-    title = "UPGMA dendrogram for {g}".format(g=AMR_gene)
+    title = "UPGMA dendrogram for {g}".format(g=gene)
     # The create_dendrogram function wraps the scipy.hierarchy.dendrogram function. It automatically calculates the
     # condensed distance matrix using pdist assuming Euclidean distances and obtains the UPGMA linkage matrix.
     fig = create_dendrogram(linkage_matrix,
@@ -256,7 +287,7 @@ def plotly_dendrogram(linkage_matrix, genome_names, AMR_gene):
     return fig
 
 
-def plotly_mcl_network(matrix, clusters, genome_names, AMR_gene):
+def plotly_mcl_network(matrix, clusters, genome_names, gene):
     # make a networkx graph from the adjacency matrix
     graph = nx.Graph(matrix)
     pos = nx.spring_layout(graph)
@@ -325,7 +356,7 @@ def plotly_mcl_network(matrix, clusters, genome_names, AMR_gene):
     # Baseline figure with graph edges
     fig = go.Figure(data=edge_trace,
                     layout=go.Layout(
-                        title='MCL network clusters for {}'.format(AMR_gene),
+                        title='MCL network clusters for {}'.format(gene),
                         autosize=False,
                         width=419,
                         height=316,
@@ -361,7 +392,7 @@ def plotly_mcl_network(matrix, clusters, genome_names, AMR_gene):
     return fig
 
 
-def plotly_pcoa(distance_matrix_df, genome_ids, labels, AMR_gene):
+def plotly_pcoa(distance_matrix_df, genome_ids, labels, gene):
     """
     Make Plotly dash interactive scatterplot of PCoA visualization of DBSCAN clusters
     """
@@ -385,7 +416,7 @@ def plotly_pcoa(distance_matrix_df, genome_ids, labels, AMR_gene):
                      color='Cluster',
                      color_discrete_sequence=colors,
                      hover_name='GenomeID',
-                     title='PCoA DBSCAN clusters for {g}'.format(g=AMR_gene))
+                     title='PCoA DBSCAN clusters for {g}'.format(g=gene))
     fig.update_traces(marker_size=5, line=dict(width=2, color='black'))
     fig.update_layout(paper_bgcolor='white', font_family='"Open Sans", verdana, arial, sans-serif',
                       template='plotly_white', width=419, height=316)
@@ -394,21 +425,18 @@ def plotly_pcoa(distance_matrix_df, genome_ids, labels, AMR_gene):
 
 
 # --------------------------------------------------- DASHBOARD --------------------------------------------------------
-assets_path = sys.argv[1] if len(sys.argv) > 1 else "assets/"
+if len(sys.argv) > 1:
+    assets = sys.argv[1]
+    create_assets_symlinks(assets)
 
+assets_path = "assets"
 app = dash.Dash(__name__, background_callback_manager=background_callback_manager,
-                assets_folder=assets_path,
                 external_stylesheets=[dbc.themes.LUX],
                 external_scripts=['https://cdn.plot.ly/plotly-2.3.0.min.js']
                 )
 server = app.server
 app.config.suppress_callback_exceptions = True
 app.title = 'Gene neighborhoods visualizer'
-
-# Take user provided paths for resources if available, otherwise fall back on defaults
-#clustering_path = sys.argv[1] if len(sys.argv) > 1 else "clustering/"
-#json_path = sys.argv[2] if len(sys.argv) > 2 else "assets/clustermap/JSON/"
-#d3_path = sys.argv[3] if len(sys.arg)
 
 app.layout = html.Div(children=[
     html.Div(className='row',
@@ -487,7 +515,7 @@ app.layout = html.Div(children=[
                              type='circle',
                              style={'padding-top': '900px'}
                          ),
-                         html.Iframe(src=app.get_asset_url('assets/clustermap/JSON/' + get_gene_names()[0] + '.html'),
+                         html.Iframe(src=app.get_asset_url(assets_path + '/JSON/' + get_gene_names()[0] + '.html'),
                                      id='clustermap', title='clustermap'),
                          dbc.Table.from_dataframe(df=gene_surrogates_to_df(get_gene_names()[0]),
                                    id='surrogates-table', bordered=True, hover=True,
@@ -532,7 +560,7 @@ def clustering_hyperparameters_callback(num_clicks):
         return {'display': 'inline'}
 
 
-# ------------------------------- Update all graphs based on AMR gene dropdown selection -------------------------------
+# ------------------------------- Update all graphs based on gene dropdown selection -------------------------------
 @app.callback(Output(component_id='clustermap', component_property='src'),
               [Input(component_id='gene-selector', component_property='value'),
                Input(component_id='clustermap-mode', component_property='value')])
@@ -659,4 +687,11 @@ def clustermap_loading_callback(input_value):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    if len(sys.argv) > 1:
+        data_path = sys.argv[1]
+        create_assets_symlinks(data_path)
+        app.run_server(debug=True)
+    else:
+        print("Error: data directories (JSON, clustering) not specified. Please double-check the documentation and "
+              "pass the full filepath to the required data directories.")
+        sys.exit(1)

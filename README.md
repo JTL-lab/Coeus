@@ -30,16 +30,19 @@ poetry show --help
 ```
 
 ### Using the dashboard
-1. Ensure the `JSON` directory containing all gene order visualizations generated from `Gene-Order-Workflow` is present in `assets/clustermap/JSON` (sample data is included as a placeholder). 
+1. Ensure you have a `JSON` directory and `clustering` directory present somewhere on your local device (obtianable from running `Gene-Order-Workflow` on your dataset).
 
-2. If you do not intend to generate clustering figures dynamically using the available hyperparameter controls in the dashboard and want to use precomputed figures instead (default, generally recommended for large datasets), ensure the `clustering` directory containing all clustering ouputs generated from `Gene-Order-Workflow` is present in `assets/clustering` (sample data is included as a placeholder).
-
-3. Once you've installed the required dependencies as shown in the Installation section, you can use the dashboard on your local machine by running the following within the src directory (`Coeus/coeus`): 
+2. Once you've installed the required dependencies as shown in the Installation section, you can use the dashboard on your local machine by running the following within the src directory (`Coeus/coeus`): 
 ```
-poetry run python coeus.py
+poetry run python coeus.py <full_path_to_data_directories>
 ```
 
-4. Launch your preferred web browser to view the dashboard at http://localhost:8050/ .
+Alternatively, if you would like to view the sample dataset, you can run: 
+```
+poetry run python coeus.py 'sample_data'
+```
+
+3. Launch your preferred web browser to view the dashboard at http://localhost:8050/ !
 
 ### Acknowledgements 
 To render gene order visualizations within the dashboard, this project uses code developed by Cameron Gilchrist (gamcil) for the D3 chart clustermap.js, which is used and modified here under the MIT license.

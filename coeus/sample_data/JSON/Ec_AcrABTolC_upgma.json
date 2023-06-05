@@ -1,0 +1,1133 @@
+{
+
+    "clusters": [
+
+        {
+
+            "uid": "frktlvndloyeowjklzemmbltwvctxotxbhzl",
+
+            "name": "Salmonella Heidelberg 2",
+
+            "loci": [
+
+                {
+
+                    "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul",
+
+                    "name": "Salmonella Heidelberg 2",
+
+                    "start": 660493,
+
+                    "end": 679720,
+
+                    "genes": [
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-0",
+
+                            "name": "UID",
+
+                            "start": 669651,
+
+                            "end": 670317,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-1",
+
+                            "name": "sotB",
+
+                            "start": 668414,
+
+                            "end": 669605,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-2",
+
+                            "name": "gltR_1",
+
+                            "start": 667426,
+
+                            "end": 668299,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-3",
+
+                            "name": "sad_1",
+
+                            "start": 665935,
+
+                            "end": 667324,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-4",
+
+                            "name": "glsA2",
+
+                            "start": 664936,
+
+                            "end": 665863,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-5",
+
+                            "name": "UID",
+
+                            "start": 664577,
+
+                            "end": 664937,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-6",
+
+                            "name": "UID",
+
+                            "start": 663408,
+
+                            "end": 664356,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-7",
+
+                            "name": "UID",
+
+                            "start": 662825,
+
+                            "end": 663353,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-8",
+
+                            "name": "ompC_1",
+
+                            "start": 660975,
+
+                            "end": 662094,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-9",
+
+                            "name": "hybF_1",
+
+                            "start": 660493,
+
+                            "end": 660835,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-10",
+
+                            "name": "marR",
+
+                            "start": 670575,
+
+                            "end": 671010,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-11",
+
+                            "name": "ydfG",
+
+                            "start": 678973,
+
+                            "end": 679720,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-12",
+
+                            "name": "dcp",
+
+                            "start": 676792,
+
+                            "end": 678835,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-13",
+
+                            "name": "UID",
+
+                            "start": 676266,
+
+                            "end": 676449,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-14",
+
+                            "name": "pncC_1",
+
+                            "start": 675603,
+
+                            "end": 676131,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-15",
+
+                            "name": "ygiW_1",
+
+                            "start": 674783,
+
+                            "end": 675176,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-16",
+
+                            "name": "mgtS",
+
+                            "start": 674340,
+
+                            "end": 674436,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-17",
+
+                            "name": "mdrP",
+
+                            "start": 672905,
+
+                            "end": 674093,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-18",
+
+                            "name": "eamA",
+
+                            "start": 671775,
+
+                            "end": 672678,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-19",
+
+                            "name": "UID",
+
+                            "start": 671447,
+
+                            "end": 671657,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-20",
+
+                            "name": "marA_1",
+
+                            "start": 671029,
+
+                            "end": 671413,
+
+                            "strand": 1
+
+                        }
+
+                    ]
+
+                }
+
+            ]
+
+        },
+
+        {
+
+            "uid": "khbpxqriihdudjfqnphhizobgqdudqwzrveh",
+
+            "name": "Salmonella Heidelberg 5",
+
+            "loci": [
+
+                {
+
+                    "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa",
+
+                    "name": "Salmonella Heidelberg 5",
+
+                    "start": 272668,
+
+                    "end": 294499,
+
+                    "genes": [
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-0",
+
+                            "name": "acrA",
+
+                            "start": 281129,
+
+                            "end": 282323,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-1",
+
+                            "name": "acrB_1",
+
+                            "start": 277957,
+
+                            "end": 281107,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-2",
+
+                            "name": "tomB",
+
+                            "start": 277087,
+
+                            "end": 277462,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-3",
+
+                            "name": "hha_1",
+
+                            "start": 276841,
+
+                            "end": 277060,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-4",
+
+                            "name": "maa",
+
+                            "start": 276111,
+
+                            "end": 276663,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-5",
+
+                            "name": "ylaC",
+
+                            "start": 275525,
+
+                            "end": 275996,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-6",
+
+                            "name": "ykgO",
+
+                            "start": 275329,
+
+                            "end": 275470,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-7",
+
+                            "name": "rpmE2",
+
+                            "start": 275063,
+
+                            "end": 275324,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-8",
+
+                            "name": "pdeB",
+
+                            "start": 273288,
+
+                            "end": 274839,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-9",
+
+                            "name": "atl",
+
+                            "start": 272668,
+
+                            "end": 272980,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-10",
+
+                            "name": "acrR_1",
+
+                            "start": 282464,
+
+                            "end": 283118,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-11",
+
+                            "name": "htpG_1",
+
+                            "start": 292624,
+
+                            "end": 294499,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-12",
+
+                            "name": "recR",
+
+                            "start": 291908,
+
+                            "end": 292514,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-13",
+
+                            "name": "ybaB",
+
+                            "start": 291579,
+
+                            "end": 291909,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-14",
+
+                            "name": "dnaX",
+
+                            "start": 289605,
+
+                            "end": 291534,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-15",
+
+                            "name": "apt",
+
+                            "start": 288940,
+
+                            "end": 289492,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-16",
+
+                            "name": "ybaN",
+
+                            "start": 288410,
+
+                            "end": 288788,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-17",
+
+                            "name": "priC",
+
+                            "start": 287814,
+
+                            "end": 288330,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-18",
+
+                            "name": "UID",
+
+                            "start": 287633,
+
+                            "end": 287801,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-19",
+
+                            "name": "UID",
+
+                            "start": 286640,
+
+                            "end": 287564,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-20",
+
+                            "name": "mscK",
+
+                            "start": 283236,
+
+                            "end": 286599,
+
+                            "strand": 1
+
+                        }
+
+                    ]
+
+                }
+
+            ]
+
+        }
+
+    ],
+
+    "links": [],
+
+    "groups": [
+
+        {
+
+            "uid": "group1",
+
+            "label": "sotB",
+
+            "genes": [
+
+                "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-1"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group2",
+
+            "label": "gltR_1",
+
+            "genes": [
+
+                "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-2"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group3",
+
+            "label": "sad_1",
+
+            "genes": [
+
+                "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-3"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group4",
+
+            "label": "glsA2",
+
+            "genes": [
+
+                "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-4"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group5",
+
+            "label": "ompC_1",
+
+            "genes": [
+
+                "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-8"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group6",
+
+            "label": "hybF_1",
+
+            "genes": [
+
+                "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-9"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group7",
+
+            "label": "marR",
+
+            "genes": [
+
+                "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-10"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group8",
+
+            "label": "ydfG",
+
+            "genes": [
+
+                "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-11"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group9",
+
+            "label": "dcp",
+
+            "genes": [
+
+                "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-12"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group10",
+
+            "label": "pncC_1",
+
+            "genes": [
+
+                "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-14"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group11",
+
+            "label": "ygiW_1",
+
+            "genes": [
+
+                "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-15"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group12",
+
+            "label": "mgtS",
+
+            "genes": [
+
+                "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-16"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group13",
+
+            "label": "mdrP",
+
+            "genes": [
+
+                "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-17"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group14",
+
+            "label": "eamA",
+
+            "genes": [
+
+                "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-18"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group15",
+
+            "label": "marA_1",
+
+            "genes": [
+
+                "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-20"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group16",
+
+            "label": "sad",
+
+            "genes": [
+
+                "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-3"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group17",
+
+            "label": "gltR",
+
+            "genes": [
+
+                "lnoqstbiqiqcnoitmghbxilinjjnjhmgfmul-2"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group18",
+
+            "label": "mscK",
+
+            "genes": [
+
+                "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-20"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group19",
+
+            "label": "priC",
+
+            "genes": [
+
+                "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-17"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group20",
+
+            "label": "ybaN",
+
+            "genes": [
+
+                "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-16"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group21",
+
+            "label": "apt",
+
+            "genes": [
+
+                "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-15"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group22",
+
+            "label": "dnaX",
+
+            "genes": [
+
+                "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-14"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group23",
+
+            "label": "ybaB",
+
+            "genes": [
+
+                "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-13"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group24",
+
+            "label": "recR",
+
+            "genes": [
+
+                "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-12"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group25",
+
+            "label": "acrR_1",
+
+            "genes": [
+
+                "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-10"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group27",
+
+            "label": "atl",
+
+            "genes": [
+
+                "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-9"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group28",
+
+            "label": "pdeB",
+
+            "genes": [
+
+                "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-8"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group29",
+
+            "label": "rpmE2",
+
+            "genes": [
+
+                "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-7"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group30",
+
+            "label": "ylaC",
+
+            "genes": [
+
+                "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-5"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group31",
+
+            "label": "maa",
+
+            "genes": [
+
+                "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-4"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group32",
+
+            "label": "hha",
+
+            "genes": [
+
+                "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-3"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group33",
+
+            "label": "tomB",
+
+            "genes": [
+
+                "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-2"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group34",
+
+            "label": "acrB_1",
+
+            "genes": [
+
+                "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-1"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group35",
+
+            "label": "acrA",
+
+            "genes": [
+
+                "vpcomvppnxslmngodobamrkmcxjtgvzeicqa-0"
+
+            ]
+
+        }
+
+    ]
+
+}

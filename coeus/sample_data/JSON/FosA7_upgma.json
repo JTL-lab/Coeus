@@ -1,0 +1,817 @@
+{
+
+    "clusters": [
+
+        {
+
+            "uid": "zayuoldtfxbwjgxqbaezlqehfysefoueeoie",
+
+            "name": "Salmonella Heidelberg 12",
+
+            "loci": [
+
+                {
+
+                    "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob",
+
+                    "name": "Salmonella Heidelberg 12",
+
+                    "start": 157231,
+
+                    "end": 187658,
+
+                    "genes": [
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-0",
+
+                            "name": "UID",
+
+                            "start": 177870,
+
+                            "end": 178038,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-1",
+
+                            "name": "rep_1",
+
+                            "start": 175611,
+
+                            "end": 177729,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-2",
+
+                            "name": "UID",
+
+                            "start": 169273,
+
+                            "end": 175615,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-3",
+
+                            "name": "UID",
+
+                            "start": 164351,
+
+                            "end": 169274,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-4",
+
+                            "name": "rapA_2",
+
+                            "start": 161523,
+
+                            "end": 164349,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-5",
+
+                            "name": "UID",
+
+                            "start": 160093,
+
+                            "end": 160873,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-6",
+
+                            "name": "UID",
+
+                            "start": 159618,
+
+                            "end": 159933,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-7",
+
+                            "name": "intS_2",
+
+                            "start": 159334,
+
+                            "end": 159622,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-8",
+
+                            "name": "ahr",
+
+                            "start": 157789,
+
+                            "end": 158809,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-9",
+
+                            "name": "gntK_2",
+
+                            "start": 157231,
+
+                            "end": 157762,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-10",
+
+                            "name": "fosA",
+
+                            "start": 178161,
+
+                            "end": 178584,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-11",
+
+                            "name": "UID",
+
+                            "start": 187289,
+
+                            "end": 187658,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-12",
+
+                            "name": "UID",
+
+                            "start": 186080,
+
+                            "end": 186992,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-13",
+
+                            "name": "UID",
+
+                            "start": 184809,
+
+                            "end": 185805,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-14",
+
+                            "name": "UID",
+
+                            "start": 183949,
+
+                            "end": 184558,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-15",
+
+                            "name": "UID",
+
+                            "start": 183599,
+
+                            "end": 183896,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-16",
+
+                            "name": "UID",
+
+                            "start": 183203,
+
+                            "end": 183461,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-17",
+
+                            "name": "COQ3",
+
+                            "start": 181567,
+
+                            "end": 183193,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-18",
+
+                            "name": "yeeN",
+
+                            "start": 180291,
+
+                            "end": 181008,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-19",
+
+                            "name": "UID",
+
+                            "start": 180242,
+
+                            "end": 180350,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-20",
+
+                            "name": "UID",
+
+                            "start": 178936,
+
+                            "end": 179812,
+
+                            "strand": 1
+
+                        }
+
+                    ]
+
+                }
+
+            ]
+
+        },
+
+        {
+
+            "uid": "zevqxvnszoysbipkqypzxffbecqsebgizuja",
+
+            "name": "Salmonella Heidelberg 7",
+
+            "loci": [
+
+                {
+
+                    "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov",
+
+                    "name": "Salmonella Heidelberg 7",
+
+                    "start": 15906,
+
+                    "end": 39683,
+
+                    "genes": [
+
+                        {
+
+                            "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-0",
+
+                            "name": "UID",
+
+                            "start": 37611,
+
+                            "end": 38487,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-1",
+
+                            "name": "UID",
+
+                            "start": 38917,
+
+                            "end": 39025,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-2",
+
+                            "name": "yeeN",
+
+                            "start": 38966,
+
+                            "end": 39683,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-3",
+
+                            "name": "fosA",
+
+                            "start": 36836,
+
+                            "end": 37259,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-4",
+
+                            "name": "gntK_2",
+
+                            "start": 15906,
+
+                            "end": 16437,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-5",
+
+                            "name": "ahr",
+
+                            "start": 16464,
+
+                            "end": 17484,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-6",
+
+                            "name": "intS_3",
+
+                            "start": 18009,
+
+                            "end": 18297,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-7",
+
+                            "name": "UID",
+
+                            "start": 18293,
+
+                            "end": 18608,
+
+                            "strand": -1
+
+                        },
+
+                        {
+
+                            "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-8",
+
+                            "name": "UID",
+
+                            "start": 18768,
+
+                            "end": 19548,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-9",
+
+                            "name": "rapA_2",
+
+                            "start": 20198,
+
+                            "end": 23024,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-10",
+
+                            "name": "UID",
+
+                            "start": 23026,
+
+                            "end": 27949,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-11",
+
+                            "name": "UID",
+
+                            "start": 27948,
+
+                            "end": 34290,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-12",
+
+                            "name": "rep_2",
+
+                            "start": 34286,
+
+                            "end": 36404,
+
+                            "strand": 1
+
+                        },
+
+                        {
+
+                            "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-13",
+
+                            "name": "UID",
+
+                            "start": 36545,
+
+                            "end": 36713,
+
+                            "strand": -1
+
+                        }
+
+                    ]
+
+                }
+
+            ]
+
+        }
+
+    ],
+
+    "links": [
+
+        {
+
+            "uid": "Salmonella Heidelberg 12_MPFEEIDI_03816-Salmonella Heidelberg 7_AKBDPEOC_04303",
+
+            "target": {
+
+                "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-18",
+
+                "name": "yeeN-1"
+
+            },
+
+            "query": {
+
+                "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-2",
+
+                "name": "yeeN-2"
+
+            },
+
+            "identity": 0.7
+
+        },
+
+        {
+
+            "uid": "Salmonella Heidelberg 12_MPFEEIDI_03819-Salmonella Heidelberg 7_AKBDPEOC_04300",
+
+            "target": {
+
+                "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-10",
+
+                "name": "fosA-1"
+
+            },
+
+            "query": {
+
+                "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-3",
+
+                "name": "fosA-2"
+
+            },
+
+            "identity": 0.7
+
+        },
+
+        {
+
+            "uid": "Salmonella Heidelberg 12_MPFEEIDI_03830-Salmonella Heidelberg 7_AKBDPEOC_04289",
+
+            "target": {
+
+                "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-9",
+
+                "name": "gntK_2-1"
+
+            },
+
+            "query": {
+
+                "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-4",
+
+                "name": "gntK_2-2"
+
+            },
+
+            "identity": 0.7
+
+        },
+
+        {
+
+            "uid": "Salmonella Heidelberg 12_MPFEEIDI_03829-Salmonella Heidelberg 7_AKBDPEOC_04290",
+
+            "target": {
+
+                "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-8",
+
+                "name": "ahr-1"
+
+            },
+
+            "query": {
+
+                "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-5",
+
+                "name": "ahr-2"
+
+            },
+
+            "identity": 0.7
+
+        },
+
+        {
+
+            "uid": "Salmonella Heidelberg 12_MPFEEIDI_03824-Salmonella Heidelberg 7_AKBDPEOC_04295",
+
+            "target": {
+
+                "uid": "dxvcllmyeganfrdllbiztaagrxzmavcadbob-4",
+
+                "name": "rapA_2-1"
+
+            },
+
+            "query": {
+
+                "uid": "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-9",
+
+                "name": "rapA_2-2"
+
+            },
+
+            "identity": 0.7
+
+        }
+
+    ],
+
+    "groups": [
+
+        {
+
+            "uid": "group1",
+
+            "label": "yeeN",
+
+            "genes": [
+
+                "dxvcllmyeganfrdllbiztaagrxzmavcadbob-18",
+
+                "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-2"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group2",
+
+            "label": "COQ3",
+
+            "genes": [
+
+                "dxvcllmyeganfrdllbiztaagrxzmavcadbob-17"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group3",
+
+            "label": "fosA",
+
+            "genes": [
+
+                "dxvcllmyeganfrdllbiztaagrxzmavcadbob-10",
+
+                "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-3"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group4",
+
+            "label": "gntK_2",
+
+            "genes": [
+
+                "dxvcllmyeganfrdllbiztaagrxzmavcadbob-9",
+
+                "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-4"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group5",
+
+            "label": "ahr",
+
+            "genes": [
+
+                "dxvcllmyeganfrdllbiztaagrxzmavcadbob-8",
+
+                "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-5"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group6",
+
+            "label": "intS_2",
+
+            "genes": [
+
+                "dxvcllmyeganfrdllbiztaagrxzmavcadbob-7"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group7",
+
+            "label": "rapA_2",
+
+            "genes": [
+
+                "dxvcllmyeganfrdllbiztaagrxzmavcadbob-4",
+
+                "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-9"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group8",
+
+            "label": "rep_1",
+
+            "genes": [
+
+                "dxvcllmyeganfrdllbiztaagrxzmavcadbob-1"
+
+            ]
+
+        },
+
+        {
+
+            "uid": "group9",
+
+            "label": "intS_3",
+
+            "genes": [
+
+                "gxkjqoxnhgpgwvamlhqxkiluecixyawjnmov-6"
+
+            ]
+
+        }
+
+    ]
+
+}

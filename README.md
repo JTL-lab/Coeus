@@ -30,7 +30,7 @@ poetry show --help
 ```
 
 ### Using the dashboard
-1. Ensure you have a `JSON` directory and `clustering` directory present somewhere on your local device (obtianable from running `Gene-Order-Workflow` on your dataset).
+1. Ensure you have a `JSON` directory and `clustering` directory present somewhere on your local device (obtainable from running `Gene-Order-Workflow` on your dataset).
 
 2. Once you've installed the required dependencies as shown in the Installation section, you can use the dashboard on your local machine by running the following within the src directory (`Coeus/coeus`): 
 ```

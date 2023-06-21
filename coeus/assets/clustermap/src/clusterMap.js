@@ -83,7 +83,8 @@ export default function clusterMap() {
             .on("zoom", (event) => g.attr("transform", event.transform))
             .on("start", () => svg.attr("cursor", "grabbing"))
             .on("end", () => svg.attr("cursor", "grab"));
-          let transform = d3.zoomIdentity.translate(20, 50).scale(1.2);
+          let padding = 30;
+          let transform = d3.zoomIdentity.translate(3 * window.innerWidth / 8, padding).scale(1.2);
           svg
             .call(zoom)
             .call(zoom.transform, transform)

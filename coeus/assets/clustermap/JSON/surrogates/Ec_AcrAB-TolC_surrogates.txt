@@ -1,6 +1,0 @@
-Salmonella Heidelberg 2: [Salmonella Heidelberg 13]
-
-Salmonella Heidelberg 6: [Salmonella Heidelberg 12, Salmonella Heidelberg 14, Salmonella Heidelberg 3, Salmonella Heidelberg 9, Salmonella Heidelberg 10, Salmonella Heidelberg 7, Salmonella Heidelberg 11, Salmonella Heidelberg 1]
-
-Salmonella Heidelberg 8: [Salmonella Heidelberg 4]
-

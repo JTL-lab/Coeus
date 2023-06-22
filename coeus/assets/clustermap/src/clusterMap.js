@@ -259,6 +259,18 @@ export default function clusterMap() {
             .attr("class", "gene")
             .attr("display", "inline");
           enter
+            .append("title")
+            .attr("class", "geneTooltip")
+            .text((d) => `${d.name.replace("UID-", "UID: ")} (Start: ${d.start}, End: ${d.end})`);
+          enter
+            .on("mousemove", (event, d) => {
+              const tooltip = d3.select(".tooltip");
+            })
+            .on("mouseout", () => {
+              const tooltip = d3.select(".tooltip");
+              tooltip.style("opacity", 0);
+            });
+          enter
             .append("polygon")
             .on("click", api.config.gene.shape.onClick)
             .on("contextmenu", api.gene.contextMenu)

@@ -273,6 +273,7 @@ export default function clusterMap() {
           enter
             .append("polygon")
             .on("click", api.config.gene.shape.onClick)
+            .style("stroke-width", (d) => (d.isCenter ? 2 : 1))
             .on("contextmenu", api.gene.contextMenu)
             .attr("class", "genePolygon");
           enter
@@ -305,6 +306,9 @@ export default function clusterMap() {
             .style("fill", "white")
             .style("text-anchor", "middle")
             .style("font-family", api.config.plot.fontFamily);
+          enter
+            .append("title")
+            .text((d) => `Identity: ${d.identity}%`);
           return enter.call(api.link.update);
         },
         (update) =>

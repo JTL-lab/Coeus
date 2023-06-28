@@ -59,17 +59,17 @@ def create_assets_symlinks(path):
         json_folder = os.path.join(path, "JSON")
         clustering_folder = os.path.join(path, "clustering")
 
-    # Default assets folder
-    assets_folder = "assets"
 
     # Create symbolic links for JSON and clustering subdirectories
-    if not os.path.isdir(json_folder) or not os.path.isdir(clustering_folder):
-        print("Error: JSON and/or clustering directories missing from provided path. Please doublecheck that you are "
+    if not os.path.isdir(json_folder):
+        print("Error: JSON directory missing from provided path. Please doublecheck that you are "
               "providing the correct full filepath and retry.")
         sys.exit(1)
-
-    symlink_dir("assets/clustermap", "JSON", json_folder)
-    symlink_dir("assets", "clustering", clustering_folder)
+    elif os.path.isdir(json_folder) and not os.path.isdir(clustering_folder):
+        symlink_dir("assets/clustermap", "JSON", json_folder)
+    else:
+        symlink_dir("assets/clustermap", "JSON", json_folder)
+        symlink_dir("assets", "clustering", clustering_folder)
 
 
 def get_colors(num):
@@ -131,6 +131,9 @@ def gene_surrogates_to_df(gene):
     except AttributeError:
         df = pd.read_csv(assets_path + '/clustermap/JSON/surrogates/' + gene + '_surrogates.txt', delimiter=':',
                          names=['Surrogate Genome'])
+    except FileNotFoundError:
+        print("Surrogates not found: using empty dataframe.")
+        df = pd.DataFrame()
 
     return df
 
@@ -179,7 +182,12 @@ def load_similarity_matrix(gene):
     """
     Loads similarity matrix required for rendering MCL clustering.
     """
-    df = pd.read_csv(assets_path + '/clustering/similarity_matrices/' + gene + '_similarity_matrix.csv', sep='\t')
+    try:
+        df = pd.read_csv(assets_path + '/clustering/similarity_matrices/' + gene + '_similarity_matrix.csv', sep='\t')
+    except FileNotFoundError:
+        print("WARNING: Similarity matrix for {g} not found. Using empty DataFrame.".format(g=gene))
+        df = pd.DataFrame()
+
     return df
 
 
@@ -187,7 +195,11 @@ def load_distance_matrix(gene):
     """
     Loads distance matrix required for rendering UPGMA and DBSCAN clustering.
     """
-    df = pd.read_csv(assets_path + '/clustering/distance_matrices/' + gene + '_distance_matrix.csv', sep='\t')
+    try:
+        df = pd.read_csv(assets_path + '/clustering/distance_matrices/' + gene + '_distance_matrix.csv', sep='\t')
+    except FileNotFoundError:
+        print("WARNING: Distance matrix for {g} not found. Using empty DataFrame.".format(g=gene))
+        df = pd.DataFrame
     return df
 
 
@@ -196,7 +208,10 @@ def get_UPGMA_heights(gene):
     Obtains all unique node heights from the UPGMA dendrogram.
     """
     distance_matrix_df = load_distance_matrix(gene)
-    genome_names = list(distance_matrix_df.columns)
+    try:
+        genome_names = list(distance_matrix_df.columns)
+    except TypeError:
+        genome_names = []
     linkage_matrix = hierarchy.linkage(distance_matrix_df.values, method='average')
     dendrogram = hierarchy.dendrogram(linkage_matrix, labels=genome_names)
 
@@ -227,7 +242,10 @@ def render_UPGMA(gene):
     Generates a UPGMA graph by applying the figure factory dendrogram to the selected gene's distance matrix.
     """
     distance_matrix_df = load_distance_matrix(gene)
-    genome_names = list(distance_matrix_df.columns)
+    try:
+        genome_names = list(distance_matrix_df.columns)
+    except TypeError:
+        genome_names = []
     fig = plotly_dendrogram(distance_matrix_df.values, genome_names, gene)
 
     if len(genome_names) > 20:
@@ -244,7 +262,10 @@ def render_MCL(gene, inflation=2):
     Generates an MCL network using markov clustering, networkx, and Plotly go.
     """
     similarity_matrix_df = load_similarity_matrix(gene)
-    genome_names = list(similarity_matrix_df.columns)
+    try:
+        genome_names = list(similarity_matrix_df.columns)
+    except TypeError:
+        genome_names = []
 
     np_matrix = np.array(similarity_matrix_df.values)
     sparse_matrix = sparse.csr_matrix(np_matrix)
@@ -261,8 +282,10 @@ def render_DBSCAN(gene, min_samples=5, eps=0.5):
     Applies DBSCAN clustering to a neighborhood similarity or symmetric distance matrix.
     """
     distance_matrix_df = load_distance_matrix(gene)
-    genome_names = list(distance_matrix_df.columns)
-
+    try:
+        genome_names = list(distance_matrix_df.columns)
+    except TypeError:
+        genome_names = []
     np_distance_matrix = np.array(distance_matrix_df.values)
     distance_matrix = StandardScaler().fit_transform(np_distance_matrix)
 
@@ -279,11 +302,14 @@ def plotly_dendrogram(linkage_matrix, genome_names, gene):
     title = "UPGMA dendrogram for {g}".format(g=gene)
     # The create_dendrogram function wraps the scipy.hierarchy.dendrogram function. It automatically calculates the
     # condensed distance matrix using pdist assuming Euclidean distances and obtains the UPGMA linkage matrix.
-    fig = create_dendrogram(linkage_matrix,
-                            linkagefun=lambda x: hierarchy.linkage(x, "average"),
-                            labels=genome_names,
-                            colorscale=get_colors(len(genome_names)))
-    fig.update_layout(autosize=True, title=title, paper_bgcolor='white', template='plotly_white', width=419, height=316)
+    try:
+        fig = create_dendrogram(linkage_matrix,
+                                linkagefun=lambda x: hierarchy.linkage(x, "average"),
+                                labels=genome_names,
+                                colorscale=get_colors(len(genome_names)))
+        fig.update_layout(autosize=True, title=title, paper_bgcolor='white', template='plotly_white', width=419, height=316)
+    except AttributeError:
+        fig = go.Figure()
     return fig
 
 
@@ -428,7 +454,8 @@ def plotly_pcoa(distance_matrix_df, genome_ids, labels, gene):
 if len(sys.argv) > 1:
     assets = sys.argv[1]
     create_assets_symlinks(assets)
-
+else:
+    assets = "assets"
 assets_path = "assets"
 app = dash.Dash(__name__, background_callback_manager=background_callback_manager,
                 external_stylesheets=[dbc.themes.LUX],
@@ -438,116 +465,191 @@ server = app.server
 app.config.suppress_callback_exceptions = True
 app.title = 'Gene neighborhoods visualizer'
 
-app.layout = html.Div(children=[
-    html.Div(className='row',
-             children=[
+# Check if 'clustering' directory exists
+clustering_dir = os.path.join(assets, 'clustering')
+use_clustering_layout = os.path.isdir(clustering_dir)
 
-                 # Left hand pane for user controls
-                 html.Div(className='three columns div--user-controls',
-                          children=[
-                              # Pane header: ARETE logo + dashboard title!
-                              html.Div([
-                                  dbc.Row([
-                                      html.Div(className='one column',
-                                      children=[html.Img(src=app.get_asset_url('coeus-logo-dark.svg'),
-                                                         style={'float': 'left'})
-                                  ])
-                              ]),
-                              ], style={'padding-top': '20px', 'align-items': 'center', 'display': 'flex', 'justify-content': 'center'}),
-
-
-                              html.P("Coeus allows for easy comparison of a given "
-                                     "gene's neighborhoods across multiple "
-                                     "genomes, along with the neighborhoods' clusterings using three algorithms "
-                                     "(UPGMA, MCL, and DBSCAN) to provide additional context on their similarities "
-                                     "and differences.", style={'font-size': '10pt', 'padding-top': '10px',
-                                                                'padding-left': '25px', 'padding-bottom': '11px'}),
-
-                              # Pane content
-                              dbc.Row([
-                                  html.P('Select a gene to analyze:', style={'color': '#FFFFFF',
-                                                                             'font-size': '13pt'}),
-                                  dcc.Dropdown(id='gene-selector', options=get_gene_options(),
-                                               value=get_gene_options()[0], className='gene-selector'),
-                                  html.P('View gene neighborhoods according to:', style={'color': '#FFFFFF',
-                                                                                         'font-size': '13pt',
-                                                                                         'padding-top': '25px'}),
-                                  dcc.RadioItems(id='clustermap-mode',
-                                                 options=['All genomes', 'Unique neighborhoods only',
-                                                          'Representative UPGMA cluster'],
-                                                 labelStyle={'display': 'block'},
-                                                 value='Unique neighborhoods only', style={'color': '#dc2284',
-                                                                                           'font-size': '11pt',
-                                                                                           'padding-right': '25px',
-                                                                                           'padding-bottom': '25px',
-                                                                                           'margin-right': '25px'}),
-                                  html.Button('Toggle clustering hyperparameters',
-                                              id='hyperparameter-toggle-btn',
-                                              n_clicks=0,
-                                              style={'background-color': '#7571B4', 'color': '#393939'}),
-                                  html.P(
-                                      'Note: For larger datasets, hyperparameter changes may take some time to update.',
-                                      style={'font-size': '11pt', 'padding-top': '25px'}),
+# Define layout based on directory existence
+if use_clustering_layout:
+    app.layout = html.Div(children=[
+        html.Div(className='row',
+                 children=[
+                     # Left hand pane for user controls
+                     html.Div(className='three columns div--user-controls',
+                              children=[
+                                  # Pane header: ARETE logo + dashboard title!
                                   html.Div([
-                                      html.P('Toggle hyperparameters:', style={'color': '#FFFFFF',
-                                                                               'font-size': '13pt',
-                                                                               'padding-top': '25px'}),
-                                      html.P('MCL Inflation:', style={'color': '#dc2284', 'font-size': '13pt',
-                                                                      'padding-top': '10px'}),
-                                      dcc.Slider(2, 20, 1, value=2, id='inflation-slider'),
-                                      html.P('DBSCAN Minimum Points:', style={'color': '#dc2284', 'font-size': '13pt',
-                                                                              'padding-top': '10px'}),
-                                      dcc.Slider(1, 20, 1, value=5, id='min-pts-slider'),
-                                      html.P('DBSCAN Epsilon:', style={'color': '#dc2284', 'font-size': '13pt',
-                                                                       'padding-top': '10px'}),
-                                      dcc.Slider(0.1, 1, 0.1, value=0.5, id='epsilon-slider')
-                                  ], id='clustering-hyperparameters-div'),
-                              ], style={'padding-left': '20px', 'padding-right': '20px', 'padding-top': '20px'})
-                          ],
-                          ),
+                                      dbc.Row([
+                                          html.Div(className='one column',
+                                                   children=[html.Img(src=app.get_asset_url('coeus-logo-dark.svg'),
+                                                                      style={'float': 'left'})
+                                                             ])
+                                      ])
+                                  ], style={'padding-top': '20px', 'align-items': 'center',
+                                            'display': 'flex', 'justify-content': 'center'}),
 
-                 # Gene order visualizations pane
-                 html.Div(className='six columns side-by-side bg-grey', children=[
-                     dbc.Row([
+                                  html.P("Coeus allows for easy comparison of a given "
+                                         "gene's neighborhoods across multiple "
+                                         "genomes, along with the neighborhoods' clusterings using three algorithms "
+                                         "(UPGMA, MCL, and DBSCAN) to provide additional context on their similarities "
+                                         "and differences.",
+                                         style={'font-size': '10pt', 'padding-top': '10px',
+                                                'padding-left': '25px', 'padding-bottom': '11px'}),
+
+                                  # Pane content
+                                  dbc.Row([
+                                      html.P('Select a gene to analyze:', style={'color': '#FFFFFF',
+                                                                                 'font-size': '13pt'}),
+                                      dcc.Dropdown(id='gene-selector', options=get_gene_options(),
+                                                   value=get_gene_options()[0], className='gene-selector'),
+                                      html.P('View gene neighborhoods according to:', style={'color': '#FFFFFF',
+                                                                                             'font-size': '13pt',
+                                                                                             'padding-top': '25px'}),
+                                      dcc.RadioItems(id='clustermap-mode',
+                                                     options=['All genomes', 'Unique neighborhoods only',
+                                                              'Representative UPGMA cluster'],
+                                                     labelStyle={'display': 'block'},
+                                                     value='Unique neighborhoods only',
+                                                     style={'color': '#dc2284', 'font-size': '11pt',
+                                                            'padding-right': '25px',
+                                                            'padding-bottom': '25px', 'margin-right': '25px'}),
+                                      html.Button('Toggle clustering hyperparameters',
+                                                  id='hyperparameter-toggle-btn',
+                                                  n_clicks=0,
+                                                  style={'background-color': '#7571B4', 'color': '#393939'}),
+                                      html.P('Note: For larger datasets, hyperparameter changes may take some time to update.',
+                                             style={'font-size': '11pt', 'padding-top': '25px'}),
+                                      html.Div([
+                                          html.P('Toggle hyperparameters:', style={'color': '#FFFFFF',
+                                                                                   'font-size': '13pt',
+                                                                                   'padding-top': '25px'}),
+                                          html.P('MCL Inflation:', style={'color': '#dc2284', 'font-size': '13pt',
+                                                                          'padding-top': '10px'}),
+                                          dcc.Slider(2, 20, 1, value=2, id='inflation-slider'),
+                                          html.P('DBSCAN Minimum Points:', style={'color': '#dc2284',
+                                                                                  'font-size': '13pt',
+                                                                                  'padding-top': '10px'}),
+                                          dcc.Slider(1, 20, 1, value=5, id='min-pts-slider'),
+                                          html.P('DBSCAN Epsilon:', style={'color': '#dc2284', 'font-size': '13pt',
+                                                                           'padding-top': '10px'}),
+                                          dcc.Slider(0.1, 1, 0.1, value=0.5, id='epsilon-slider')
+                                      ], id='clustering-hyperparameters-div'),
+                                  ], style={'padding-left': '20px', 'padding-right': '20px', 'padding-top': '20px'})
+                              ],
+                              ),
+
+                     # Gene order visualizations pane
+                     html.Div(className='six columns side-by-side bg-grey', children=[
+                         dbc.Row([
+                             dcc.Loading(
+                                 id='clustermap-loading',
+                                 children=[html.Div([html.Div(id='clustermap-loading-output')])],
+                                 type='circle',
+                                 style={'padding-top': '900px'}
+                             ),
+                             html.Iframe(src=app.get_asset_url(assets_path + '/JSON/' + get_gene_names()[0] + '.html'),
+                                         id='clustermap', title='clustermap'),
+                             dbc.Table.from_dataframe(df=gene_surrogates_to_df(get_gene_names()[0]),
+                                                      id='surrogates-table', bordered=True, hover=True,
+                                                      style={'color': 'black', 'font-size': 12, 'height': 200,
+                                                             'width': 2400, 'display': 'inline',
+                                                             'overflow': 'auto'})
+                         ])
+                     ]),
+
+                     # Neighborhoods clustering visualizations pane
+                     html.Div(className='three columns side-by-side bg-grey', children=[
                          dcc.Loading(
-                             id='clustermap-loading',
-                             children=[html.Div([html.Div(id='clustermap-loading-output')])],
+                             id='clustering-loading',
+                             children=[html.Div([html.Div(id='clustering-loading-output')])],
                              type='circle',
                              style={'padding-top': '900px'}
                          ),
-                         html.Iframe(src=app.get_asset_url(assets_path + '/JSON/' + get_gene_names()[0] + '.html'),
-                                     id='clustermap', title='clustermap'),
-                         dbc.Table.from_dataframe(df=gene_surrogates_to_df(get_gene_names()[0]),
-                                   id='surrogates-table', bordered=True, hover=True,
-                                   style={'color': 'black', 'font-size': 12, 'height': 200, 'width': 2400,
-                                          'display': 'inline', 'overflow': 'auto'})
-                     ])
-                 ]),
-
-                 # Neighborhoods clustering visualizations pane
-                 html.Div(className='three columns side-by-side bg-grey', children=[
-                     dcc.Loading(
-                         id='clustering-loading',
-                         children=[html.Div([html.Div(id='clustering-loading-output')])],
-                         type='circle',
-                         style={'padding-top': '900px'}
-                     ),
-                     dbc.Row([
-                         dcc.Graph(figure=render_UPGMA(get_gene_names()[0]), id='UPGMA-fig')
-                     ]),
-                     dbc.Row([
-                         html.Iframe(src=app.get_asset_url('clustering/MCL/' + get_gene_names()[0] + '.html'),
-                                     id='MCL-iframe', title='MCL', width='419px', height='316px'),
-                         dcc.Graph(figure={}, id='MCL-fig', style={'display': 'none'})
-                     ]),
-                     dbc.Row([
-                         html.Iframe(src=app.get_asset_url('clustering/DBSCAN/' + get_gene_names()[0] + '.html'),
-                                     id='DBSCAN-iframe', title='DBSCAN', width='419px', height='316px'),
-                         dcc.Graph(figure={}, id='DBSCAN-fig', style={'display': 'none'})
+                         dbc.Row([
+                             dcc.Graph(figure=render_UPGMA(get_gene_names()[0]), id='UPGMA-fig')
+                         ]),
+                         dbc.Row([
+                             html.Iframe(src=app.get_asset_url('clustering/MCL/' + get_gene_names()[0] + '.html'),
+                                         id='MCL-iframe', title='MCL', width='419px', height='316px'),
+                             dcc.Graph(figure={}, id='MCL-fig', style={'display': 'none'})
+                         ]),
+                         dbc.Row([
+                             html.Iframe(src=app.get_asset_url('clustering/DBSCAN/' + get_gene_names()[0] + '.html'),
+                                         id='DBSCAN-iframe', title='DBSCAN', width='419px', height='316px'),
+                             dcc.Graph(figure={}, id='DBSCAN-fig', style={'display': 'none'})
+                         ])
                      ])
                  ])
-             ])
-])
+    ])
+else:
+    os.mkdir(clustering_dir)
+    app.layout = html.Div(children=[
+        html.Div(className='row',
+                 children=[
+                     # Left hand pane for user controls
+                     html.Div(className='three columns div--user-controls',
+                              children=[
+                                  # Pane header: ARETE logo + dashboard title!
+                                  html.Div([
+                                      dbc.Row([
+                                          html.Div(className='one column',
+                                                   children=[html.Img(src=app.get_asset_url('coeus-logo-dark.svg'),
+                                                                      style={'float': 'left'})
+                                                             ])
+                                      ])
+                                  ], style={'padding-top': '20px', 'align-items': 'center',
+                                            'display': 'flex', 'justify-content': 'center'}),
+
+                                  html.P("Coeus allows for easy comparison of a given "
+                                         "gene's neighborhoods across multiple "
+                                         "genomes, along with the neighborhoods' clusterings using three algorithms "
+                                         "(UPGMA, MCL, and DBSCAN) to provide additional context on their similarities "
+                                         "and differences.",
+                                         style={'font-size': '10pt', 'padding-top': '10px',
+                                                'padding-left': '25px', 'padding-bottom': '11px'}),
+
+                                  # Pane content
+                                  dbc.Row([
+                                      html.P('Select a gene to analyze:', style={'color': '#FFFFFF',
+                                                                                 'font-size': '13pt'}),
+                                      dcc.Dropdown(id='gene-selector', options=get_gene_options(),
+                                                   value=get_gene_options()[0], className='gene-selector'),
+                                      html.P('View gene neighborhoods according to:', style={'color': '#FFFFFF',
+                                                                                             'font-size': '13pt',
+                                                                                             'padding-top': '25px'}),
+                                      dcc.RadioItems(id='clustermap-mode',
+                                                     options=['All genomes', 'Unique neighborhoods only',
+                                                              'Representative UPGMA cluster'],
+                                                     labelStyle={'display': 'block'},
+                                                     value='Unique neighborhoods only',
+                                                     style={'color': '#dc2284', 'font-size': '11pt',
+                                                            'padding-right': '25px',
+                                                            'padding-bottom': '25px', 'margin-right': '25px'}),
+                                  ], style={'padding-left': '20px', 'padding-right': '20px', 'padding-top': '20px'})
+                              ],
+                              ),
+
+                     # Gene order visualizations pane
+                     html.Div(className='nine columns side-by-side bg-grey', children=[
+                         dbc.Row([
+                             dcc.Loading(
+                                 id='clustermap-loading',
+                                 children=[html.Div([html.Div(id='clustermap-loading-output')])],
+                                 type='circle',
+                                 style={'padding-top': '900px'}
+                             ),
+                             html.Iframe(src=app.get_asset_url(assets + '/JSON/' + get_gene_names()[0] + '.html'),
+                                         id='clustermap', title='clustermap'),
+                             dbc.Table.from_dataframe(df=gene_surrogates_to_df(get_gene_names()[0]),
+                                                      id='surrogates-table', bordered=True, hover=True,
+                                                      style={'color': 'black', 'font-size': 12, 'height': 200,
+                                                             'width': 2400, 'display': 'inline',
+                                                             'overflow': 'auto'})
+                         ])
+                     ])
+                 ])
+    ])
+
 
 
 # ----------- If user clicks toggle button, allow them to see controls for hyperparameter tuning -----------------------

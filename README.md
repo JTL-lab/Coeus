@@ -12,19 +12,25 @@ Installation is not currently supported for Windows.
 
 Coeus is set up with Poetry for dependencies management. 
 
-To install Poetry: 
+1. Clone the repository and ``cd`` in:
+```
+git clone https://github.com/JTL-lab/Coeus.git
+cd Coeus
+```
+
+2. Install Poetry: 
 ```
 python3 -m pip install pipx
 python3 -m pipx ensurepath
 pipx install poetry
 ```
 
-To then install all project dependencies, within the Coeus repository, run: 
+3. To then install all project dependencies, within the Coeus repository, run: 
 ```
 poetry install
 ```
 
-If you're interested in viewing details on the package dependencies, within the Coeus repository you can run: 
+If you're interested in viewing details on the package dependencies and other options Poetry offers, within the Coeus repository you can run: 
 ```
 poetry show --help 
 ```
@@ -39,7 +45,7 @@ poetry run python coeus.py <full_path_to_data_directories>
 
 Alternatively, if you would like to view the sample dataset, you can run: 
 ```
-poetry run python coeus.py 'sample_data'
+poetry run python coeus.py sample_data
 ```
 
 3. Launch your preferred web browser to view the dashboard at http://localhost:8050/ !

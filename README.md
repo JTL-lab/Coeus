@@ -12,20 +12,22 @@ Installation is not currently supported for Windows.
 
 Coeus is set up with Poetry for dependencies management. 
 
-1. Clone the repository and ``cd`` in:
+1. Ensure you have a Python version between Python 3.9 - Python 3.12 (inclusive) installed.
+
+2. Clone the repository and ``cd`` in:
 ```
 git clone https://github.com/JTL-lab/Coeus.git
 cd Coeus
 ```
 
-2. Install Poetry: 
+3. Install Poetry if required: 
 ```
 python3 -m pip install pipx
 python3 -m pipx ensurepath
 pipx install poetry
 ```
 
-3. To then install all project dependencies, within the Coeus repository, run: 
+4. Within the ``Coeus`` repository, use Poetry to install and manage all dependencies: 
 ```
 poetry install
 ```
@@ -36,7 +38,7 @@ poetry show --help
 ```
 
 ### Using the dashboard
-1. Ensure you have a `JSON` directory and `clustering` directory present somewhere on your local device (obtainable from running `Gene-Order-Workflow` on your dataset).
+1. Ensure you have a `JSON` directory and `clustering` directory present somewhere on your local device (obtainable from running [Gene-Order-Workflow](https://github.com/JTL-lab/Gene-Order-Workflow) on your dataset).
 
 2. Once you've installed the required dependencies as shown in the Installation section, you can use the dashboard on your local machine by running the following within the src directory (`Coeus/coeus`): 
 ```

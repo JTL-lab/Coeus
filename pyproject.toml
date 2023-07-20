@@ -2,7 +2,7 @@
 name = "coeus"
 version = "0.1.0"
 description = ""
-authors = ["julia <jl228931@dal.ca>"]
+authors = ["julia <JuliaL@dal.ca>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]

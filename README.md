@@ -7,12 +7,12 @@ Coeus's primary use case is for the analysis of the genomic contexts of antimicr
 
 Coeus requires output files generated from [Gene-Order-Workflow](https://github.com/JTL-lab/Gene-Order-Workflow). Gene-Order-Workflow is a Nextflow based workflow to extract gene neighborhoods from assembly and annotation files for a user's specified genes of interest, derive similarity and distance matrices from BLAST All-vs-All bitscores, and perform unsupervised machine learning to assign neighborhood clusters. 
 
-### Installation 
-Installation is not currently supported for Windows. 
+## Installation 
+Installation is not currently supported for Linux and MacOS. 
 
-Coeus is set up with Poetry for dependencies management. 
+### Option 1: Poetry (Recommended)
 
-1. Ensure you have a Python version between Python 3.9 - Python 3.12 (inclusive) installed.
+1. Ensure you are using a Python version between Python 3.9 - Python 3.12 (inclusive).
 
 2. Clone the repository and ``cd`` in:
 ```
@@ -20,11 +20,15 @@ git clone https://github.com/JTL-lab/Coeus.git
 cd Coeus
 ```
 
-3. Install Poetry if required: 
+3. Install Poetry if not already installed: 
 ```
 python3 -m pip install pipx
 python3 -m pipx ensurepath
 pipx install poetry
+```
+Alternatively, you can also install Poetry using: 
+```
+curl -sSL https://install.python-poetry.org | python3 -
 ```
 
 4. Within the ``Coeus`` repository, use Poetry to install and manage all dependencies: 
@@ -35,6 +39,13 @@ poetry install
 If you're interested in viewing details on the package dependencies and other options Poetry offers, within the Coeus repository you can run: 
 ```
 poetry show --help 
+```
+### Option 2: Conda 
+A bioconda recipe may be created at a later date. For now, you can create the necessary environment by running:
+```
+conda create -n coeus python=3.11.4 ipython numpy pandas scipy networkx plotly markov_clustering scikit-learn scikit-bio diskcache multiprocess psutil
+conda activate coeus
+conda install -c conda-forge dash dash-bootstrap-components
 ```
 
 ### Using the dashboard
@@ -51,6 +62,11 @@ poetry run python coeus.py sample_data
 ```
 
 3. Launch your preferred web browser to view the dashboard at http://localhost:8050/ !
+
+If Conda was used for installation, simply omit ``poetry run`` from these commands, i.e.:  
+```
+python coeus.py <full_path_to_data_directories>
+```
 
 ### Acknowledgements 
 To render gene order visualizations within the dashboard, this project uses code developed by Cameron Gilchrist (gamcil) for the D3 chart clustermap.js, which is used and modified here under the MIT license.

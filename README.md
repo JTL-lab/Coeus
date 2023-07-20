@@ -8,7 +8,7 @@ Coeus's primary use case is for the analysis of the genomic contexts of antimicr
 Coeus requires output files generated from [Gene-Order-Workflow](https://github.com/JTL-lab/Gene-Order-Workflow). Gene-Order-Workflow is a Nextflow based workflow to extract gene neighborhoods from assembly and annotation files for a user's specified genes of interest, derive similarity and distance matrices from BLAST All-vs-All bitscores, and perform unsupervised machine learning to assign neighborhood clusters. 
 
 ## Installation 
-Installation is not currently supported for Linux and MacOS. 
+Installation is currently supported for Linux and MacOS. 
 
 ### Option 1: Poetry (Recommended)
 
@@ -40,6 +40,7 @@ If you're interested in viewing details on the package dependencies and other op
 ```
 poetry show --help 
 ```
+
 ### Option 2: Conda 
 A bioconda recipe may be created at a later date. For now, you can create the necessary environment by running:
 ```
